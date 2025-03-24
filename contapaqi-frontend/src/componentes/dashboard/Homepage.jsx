@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaHeart, FaRegHeart, FaBars, FaCog, FaPlus } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/styles.css';
+import AgregarEmpresa from '../empresa/AgregarEmpresa';
 
 function Homepage() {
     const location = useLocation();
     const navigate = useNavigate();
     const nombre = location.state?.nombre || 'Usuario';
+
+    const [showModal, setShowModal] = useState(false);
 
     const empresas = [
         { nombre: "Pizza's Mora S.A.", tipo: "Balance General", favorita: true },
@@ -30,7 +33,7 @@ function Homepage() {
             <main className="content">
                 <div className="header">
                     <h1>Bienvenido, {nombre}</h1>
-                    <button className="btn btn-primary" onClick={() => navigate('/agregar-empresa')}>
+                    <button className="btn btn-primary" onClick={() => setShowModal(true)}>
                         <FaPlus /> Agregar Empresa
                     </button>
                 </div>
@@ -54,6 +57,23 @@ function Homepage() {
                     ))}
                 </ul>
             </main>
+
+            {/* Modal */}
+            {showModal && (
+                <div className="modal d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Agregar Empresa</h5>
+                                <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+                            </div>
+                            <div className="modal-body">
+                                <AgregarEmpresa />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

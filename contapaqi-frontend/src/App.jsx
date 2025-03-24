@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './componentes/Autenticacion/Login';
 import Register from './componentes/Autenticacion/Register';
 import LoginForm from './componentes/Autenticacion/LoginForm';
-import Homepage from './componentes/dashboard  /Homepage';
+import Homepage from './componentes/dashboard/Homepage';
 import AgregarEmpresa from './componentes/empresa/AgregarEmpresa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
