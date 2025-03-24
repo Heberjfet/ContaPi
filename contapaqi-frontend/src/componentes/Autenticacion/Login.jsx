@@ -11,7 +11,7 @@ function Login() {
                     Iniciar Sesión
                 </Link>
                 <Link to="/register" className="btn btn-secondary">
-                    Iniciar Sesión 
+                    Registrarse 
                 </Link>
             </div>
         </div>

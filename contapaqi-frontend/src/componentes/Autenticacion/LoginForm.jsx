@@ -48,7 +48,7 @@ function LoginForm() {
                         <label className="form-label">Contraseña</label>
                         <input type="password" name="password" className="form-control" onChange={handleChange} required />
                     </div>
-                    <button type="submit" className="btn btn-primary w-100">Ristrarse</button>
+                    <button type="submit" className="btn btn-primary w-100">Iniciar Sesión</button>
                 </form>
             </div>
         </div>
