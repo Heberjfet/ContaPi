@@ -12,9 +12,9 @@ app.use(bodyParser.json());
 // Configuración de la conexión a MySQL
 const db = mysql.createConnection({
     host: 'localhost',
-    user: 'root', // Cambia esto por tu usuario de MySQL
-    password: 'Unico12@', // Cambia esto por tu contraseña de MySQL
-    database: 'ContaPi'
+    user: 'root-contapi', // Cambia esto por tu usuario de MySQL
+    password: 'Contapi12@', // Cambia esto por tu contraseña de MySQL
+    database: 'contapi'
 });
 
 db.connect((err) => {
