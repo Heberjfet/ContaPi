@@ -1,0 +1,118 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.d-flex {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 80px;
+    background-color: #e0d5eb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+}
+
+.menu-btn, .settings-btn, .sidebar-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    padding: 10px;
+}
+
+.sidebar-btn {
+    font-size: 14px;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    background-color: transparent;
+    border-radius: 5px;
+}
+
+.sidebar-btn:hover {
+    background-color: #c2b2d6;
+}
+
+.content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.header h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.filter {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-btn {
+    background: #e0d5eb;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.filter-btn.active {
+    background: #9071af;
+    color: white;
+}
+
+.company-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.company-item {
+    display: flex;
+    align-items: center;
+    background: #f9f9f9;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    gap: 15px;
+    position: relative;
+}
+
+.company-icon {
+    width: 50px;
+    height: 50px;
+    background: #ccc;
+    border-radius: 10px;
+}
+
+.company-info h4 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.company-info p {
+    margin: 0;
+    color: gray;
+    font-size: 14px;
+}
+
+.fav-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    position: absolute;
+    right: 15px;
+}
