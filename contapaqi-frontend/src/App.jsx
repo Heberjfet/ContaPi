@@ -5,6 +5,7 @@ import Register from './componentes/Autenticacion/Register';
 import LoginForm from './componentes/Autenticacion/LoginForm';
 import Homepage from './componentes/dashboard/Homepage';
 import AgregarEmpresa from './componentes/empresa/AgregarEmpresa';
+import RegistrarTransaccion from './componentes/empresa/registrartransaccion';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/homepage" element={<Homepage />} />
                 <Route path="/agregar-empresa" element={<AgregarEmpresa />} />
+                <Route path="/registrartransaccion" element={<RegistrarTransaccion />} />
             </Routes>
         </Router>
     );

@@ -21,13 +21,24 @@ function AgregarEmpresa() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Obtener el usuario desde localStorage
+        // Validar que se hayan llenado todos los campos
+        if (
+            !formData.nombre ||
+            !formData.rfc ||
+            !formData.direccion ||
+            !formData.telefono ||
+            !formData.email ||
+            !formData.tipo_contabilidad
+        ) {
+            alert("Debes llenar el formulario completo");
+            return;
+        }
+
         const usuario = JSON.parse(localStorage.getItem('usuario'));
 
-        // Verificar si el usuario existe
         if (!usuario || !usuario.id) {
             setError('No se encontró la información del usuario. Por favor, inicia sesión nuevamente.');
-            navigate('/login'); // Redirigir al login
+            navigate('/login');
             return;
         }
 
@@ -36,8 +47,10 @@ function AgregarEmpresa() {
                 ...formData,
                 usuario_id: usuario.id
             });
-            alert('Empresa agregada exitosamente');
-            navigate('/homepage');
+            // Mostrar mensaje de confirmación y redirigir si el usuario acepta
+            if (window.confirm("Empresa agregada exitosamente. ¿Aceptar?")) {
+                navigate('/registrartransaccion', { state: { nombreEmpresa: formData.nombre } });
+            }
         } catch (error) {
             console.error('Error al agregar empresa:', error);
             setError('Error al agregar empresa');
@@ -77,7 +90,9 @@ function AgregarEmpresa() {
                         <option value="Libro Mayor">Libro Mayor</option>
                     </select>
                 </div>
-                <button type="submit" className="btn btn-primary">Agregar Empresa</button>
+                <button type="submit" className="btn btn-primary mt-3">
+                    Agregar Empresa
+                </button>
             </form>
         </div>
     );
