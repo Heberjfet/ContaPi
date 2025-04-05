@@ -9,9 +9,8 @@ const port = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// Configuración de la conexión a MySQL
 const db = mysql.createConnection({
-    host: 'localhost',
+    host: 'mysql',
     user: 'root-contapi',
     password: 'Contapi12@',
     database: 'contapi'

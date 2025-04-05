@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./contapaqi-frontend
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - contapi-network
+
+  backend:
+    build:
+      context: ./contapaqi-backend
+      dockerfile: Dockerfile.backend
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root-contapi
+      MYSQL_PASSWORD: Contapi12@
+      MYSQL_DB: contapi
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+    networks:
+      - contapi-network
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: Contapi12@
+      MYSQL_DATABASE: contapi
+      MYSQL_USER: root-contapi
+      MYSQL_PASSWORD: Contapi12@
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./database/database_schema.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    networks:
+      - contapi-network
+
+volumes:
+  mysql-data:
+
+networks:
+  contapi-network:
