@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.41, for Linux (x86_64)
 --
--- Host: localhost    Database: contapaqi
+-- Host: localhost    Database: contapi
 -- ------------------------------------------------------
 -- Server version	8.0.41-0ubuntu0.24.04.1
 
