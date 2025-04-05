@@ -19,7 +19,7 @@ function LoginForm() {
             alert('Inicio de sesión exitoso');
             // Guardar el usuario en localStorage
             localStorage.setItem('usuario', JSON.stringify(response.data));
-            navigate('/homepage', { state: { nombre: response.data.nombre } }); // Pasar el nombre a Homepage
+            navigate('/homepage', { state: { nombre: response.data.nombre } });
         } catch (error) {
             console.error('Error al iniciar sesión:', error);
             setError('Credenciales incorrectas. Inténtalo de nuevo.');
@@ -27,8 +27,11 @@ function LoginForm() {
     };
 
     return (
-        <div className="container d-flex justify-content-center align-items-center vh-100">
-            <div className="w-100" style={{ maxWidth: '400px' }}>
+        <div
+            className="container d-flex justify-content-center align-items-center vh-100"
+            style={{ backgroundColor: '#1E3A8A' }} // Color de fondo aplicado
+        >
+            <div className="card p-4 shadow w-100" style={{ maxWidth: '400px', borderRadius: '1rem' }}>
                 {/* Botón de flecha para regresar a Login */}
                 <button
                     type="button"
@@ -42,13 +45,27 @@ function LoginForm() {
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label className="form-label">Email</label>
-                        <input type="email" name="email" className="form-control" onChange={handleChange} required />
+                        <input
+                            type="email"
+                            name="email"
+                            className="form-control"
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
                     <div className="mb-3">
                         <label className="form-label">Contraseña</label>
-                        <input type="password" name="password" className="form-control" onChange={handleChange} required />
+                        <input
+                            type="password"
+                            name="password"
+                            className="form-control"
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
-                    <button type="submit" className="btn btn-primary w-100">Iniciar Sesión</button>
+                    <button type="submit" className="btn btn-primary w-100">
+                        Iniciar Sesión
+                    </button>
                 </form>
             </div>
         </div>

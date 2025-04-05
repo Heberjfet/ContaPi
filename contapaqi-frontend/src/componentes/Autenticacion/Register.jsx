@@ -27,7 +27,7 @@ function Register() {
 
     return (
         <div className="container d-flex justify-content-center align-items-center vh-100">
-            <div className="w-100" style={{ maxWidth: '400px' }}>
+            <div className="card p-4 shadow w-100" style={{ maxWidth: '400px', borderRadius: '1rem' }}>
                 {/* Botón de flecha para regresar a Login */}
                 <button
                     type="button"
