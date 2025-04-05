@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaHeart, FaRegHeart, FaBars, FaCog, FaPlus } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../styles/styles.css';
 import AgregarEmpresa from '../empresa/AgregarEmpresa';
 
 function Homepage() {
