@@ -4,7 +4,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Login() {
     return (
-        <div className="container d-flex justify-content-center align-items-center vh-100">
+        <div
+            className="container"
+            style={{ backgroundColor: '#1E3A8A' }}
+        >
             <div className="card text-center p-4 shadow" style={{ width: '100%', maxWidth: '400px', borderRadius: '1rem' }}>
                 <div className="mb-4">
                     <img

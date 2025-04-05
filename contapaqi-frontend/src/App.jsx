@@ -7,6 +7,8 @@ import Homepage from './componentes/dashboard/Homepage';
 import AgregarEmpresa from './componentes/empresa/AgregarEmpresa';
 import RegistrarTransaccion from './componentes/empresa/registrartransaccion';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css'
+
 
 function App() {
     return (
