@@ -139,7 +139,7 @@ function Homepage() {
                                     className="btn btn-link text-white text-decoration-none d-block w-100 text-start"
                                     onClick={() => navigate('/configuracion')}
                                 >
-                                    Configuración
+                                  
                                 </button>
                             </div>
                         </div>
