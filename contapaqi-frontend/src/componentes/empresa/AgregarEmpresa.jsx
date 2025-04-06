@@ -9,7 +9,7 @@ function AgregarEmpresa() {
         direccion: '',
         telefono: '',
         email: '',
-        tipo_contabilidad: 'Balance General'
+       
     });
     const [error, setError] = useState('');
     const navigate = useNavigate();
@@ -27,8 +27,7 @@ function AgregarEmpresa() {
             !formData.rfc ||
             !formData.direccion ||
             !formData.telefono ||
-            !formData.email ||
-            !formData.tipo_contabilidad
+            !formData.email 
         ) {
             alert("Debes llenar el formulario completo");
             return;
@@ -81,14 +80,6 @@ function AgregarEmpresa() {
                 <div className="mb-3">
                     <label className="form-label">Email</label>
                     <input type="email" name="email" className="form-control" onChange={handleChange} required />
-                </div>
-                <div className="mb-3">
-                    <label className="form-label">Tipo de Contabilidad</label>
-                    <select name="tipo_contabilidad" className="form-control" onChange={handleChange} required>
-                        <option value="Balance General">Balance General</option>
-                        <option value="Libro Diario">Libro Diario</option>
-                        <option value="Libro Mayor">Libro Mayor</option>
-                    </select>
                 </div>
                 <button type="submit" className="btn btn-primary mt-3">
                     Agregar Empresa
