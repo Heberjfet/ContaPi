@@ -73,7 +73,7 @@ function LoginForm() {
           Registrarse
         </Link>
         <p className="text-muted mt-2">
-          <a href="#" className="text-decoration-none">
+          <a href="/Recuperacion" className="text-decoration-none">
             ¿Olvidaste tu contraseña?
           </a>
         </p>
