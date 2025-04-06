@@ -85,22 +85,22 @@ app.get('/empresas', (req, res) => {
 });
 
 app.post('/empresas', (req, res) => {
-    const { nombre, rfc, direccion, telefono, email, tipo_contabilidad, usuario_id } = req.body;
+    const { nombre, rfc, direccion, telefono, email, usuario_id } = req.body;
 
     // Validar que todos los campos estén presentes
-    if (!nombre || !rfc || !direccion || !telefono || !email || !tipo_contabilidad || !usuario_id) {
+    if (!nombre || !rfc || !direccion || !telefono || !email || !usuario_id) {
         return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }
 
     db.query(
-        'INSERT INTO empresas (nombre, rfc, direccion, telefono, email, tipo_contabilidad, usuario_id) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [nombre, rfc, direccion, telefono, email, tipo_contabilidad, usuario_id],
+        'INSERT INTO empresas (nombre, rfc, direccion, telefono, email, usuario_id) VALUES (?, ?, ?, ?, ?, ?)',
+        [nombre, rfc, direccion, telefono, email, usuario_id],
         (err, results) => {
             if (err) {
                 console.error('Error al agregar empresa:', err);
                 return res.status(500).json({ error: 'Error en el servidor' });
             }
-            res.json({ id: results.insertId, nombre, rfc, direccion, telefono, email, tipo_contabilidad, usuario_id });
+            res.json({ id: results.insertId, nombre, rfc, direccion, telefono, email, usuario_id });
         }
     );
 });
