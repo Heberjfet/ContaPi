@@ -43,9 +43,9 @@ function RecuperarPassword() {
         </div>
         <div className="mb-4">
           <img
-            src="https://cdn-icons-png.flaticon.com/512/6195/6195699.png"
+            src="public/access-control.png"
             alt="Lock Icon"
-            style={{ width: "80px", height: "80px", borderRadius: "50%" }}
+            style={{ width: "80px", height: "80px", borderRadius: "20%" }}
           />
         </div>
         <h4 className="mb-2 text-dark">Recuperar Contraseña</h4>
