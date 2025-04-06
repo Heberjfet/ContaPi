@@ -26,7 +26,7 @@ function RecuperarPassword() {
   return (
     <div
       className="d-flex justify-content-center align-items-center vh-100"
-      style={{ backgroundColor: "#1E3A8A" }}
+      style={{ backgroundColor: "#00294f" }}
     >
       <div
         className="card text-center p-4 shadow"
@@ -43,9 +43,9 @@ function RecuperarPassword() {
         </div>
         <div className="mb-4">
           <img
-            src="https://cdn-icons-png.flaticon.com/512/6195/6195699.png"
+            src="public/access-control.png"
             alt="Lock Icon"
-            style={{ width: "80px", height: "80px", borderRadius: "50%" }}
+            style={{ width: "80px", height: "80px", borderRadius: "20%" }}
           />
         </div>
         <h4 className="mb-2 text-dark">Recuperar Contraseña</h4>

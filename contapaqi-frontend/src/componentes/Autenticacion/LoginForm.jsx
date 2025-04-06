@@ -30,7 +30,7 @@ function LoginForm() {
   return (
     <div
       className="d-flex justify-content-center align-items-center vh-100"
-      style={{ backgroundColor: "#1E3A8A" }}
+      style={{ backgroundColor: "#00294f" }}
     >
       <div
         className="card text-center p-4 shadow"
