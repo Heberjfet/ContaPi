@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { FaBars } from "react-icons/fa";
+import { FaBars, FaFileExcel, FaFilePdf } from "react-icons/fa";
+import "../styles/DescargasMasivas.css";
 
 const DescargaMasivas = () => {
   const navigate = useNavigate();
@@ -12,9 +13,12 @@ const DescargaMasivas = () => {
     true,
     true,
     true,
+    true
   ]);
+
   const nombre =
     location.state?.nombre || localStorage.getItem("nombre") || "Usuario";
+
   const handleCheckChange = (index) => {
     const updated = [...checkedItems];
     updated[index] = !updated[index];
@@ -54,57 +58,59 @@ const DescargaMasivas = () => {
           <span className="text-white">Bienvenido, {nombre}</span>
         </div>
       </nav>
-
-      <div className="container mt-4">
-        <table className="table table-bordered table-hover">
-          <thead>
-            <tr className="bg-primary text-white">
-              <th>Selección</th>
-              <th>Folio Fiscal</th>
-              <th>RFC Emisor</th>
-              <th>Nombre o Razón Social</th>
-            </tr>
-          </thead>
-          <tbody>
-            {checkedItems.map((isChecked, index) => (
-              <tr key={index}>
-                <td>
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    checked={isChecked}
-                    onChange={() => handleCheckChange(index)}
-                  />
-                </td>
-                <td>
-                  <div className="bg-secondary p-2 rounded"></div>
-                </td>
-                <td>
-                  <div className="bg-secondary p-2 rounded"></div>
-                </td>
-                <td>
-                  <div className="bg-secondary p-2 rounded"></div>
-                </td>
+      
+      <div className="container">
+        <h2 className="page-title">Descarga Masiva de Documentos</h2>
+        
+        <div className="table-container">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th className="checkbox-column">Selección</th>
+                <th>Folio Fiscal</th>
+                <th>RFC Emisor</th>
+                <th>Nombre o Razón Social</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <div className="row mt-4">
-          <div className="col d-flex justify-content-center gap-3">
-            <button
-              className="btn btn-primary"
-              onClick={() => handleDownload("excel")}
-            >
-              Descarga Masiva
-            </button>
-            <button
-              className="btn btn-primary"
-              onClick={() => handleDownload("pdf")}
-            >
-              Descarga Masiva PDF
-            </button>
-          </div>
+            </thead>
+            <tbody>
+              {checkedItems.map((isChecked, index) => (
+                <tr key={index}>
+                  <td className="checkbox-column">
+                    <input
+                      type="checkbox"
+                      className="custom-checkbox"
+                      checked={isChecked}
+                      onChange={() => handleCheckChange(index)}
+                    />
+                  </td>
+                  <td>
+                    <div className="data-placeholder"></div>
+                  </td>
+                  <td>
+                    <div className="data-placeholder"></div>
+                  </td>
+                  <td>
+                    <div className="data-placeholder"></div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        
+        <div className="actions-container">
+          <button
+            className="btn-action btn-primary-action"
+            onClick={() => handleDownload("excel")}
+          >
+            <FaFileExcel style={{ marginRight: "8px" }} /> Descarga Masiva
+          </button>
+          <button
+            className="btn-action btn-secondary-action"
+            onClick={() => handleDownload("pdf")}
+          >
+            <FaFilePdf style={{ marginRight: "8px" }} /> Descarga Masiva PDF
+          </button>
         </div>
       </div>
     </div>
