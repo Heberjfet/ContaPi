@@ -1,0 +1,71 @@
+.sidebar-container {
+  width: 250px;
+  padding: 1.5rem 0.75rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+}
+
+.sidebar-header {
+  padding: 0.5rem 0;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.05) 100%);
+  margin: 0.5rem 0;
+}
+
+.menu-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-menu-item {
+  display: flex;
+  align-items: center;
+  color: #e0e0e0;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.25rem;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.sidebar-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  transform: translateX(3px);
+}
+
+.sidebar-menu-item.active {
+  background-color: rgba(13, 110, 253, 0.2);
+  color: #ffffff;
+  font-weight: 600;
+  border-left: 3px solid #0d6efd;
+}
+
+.menu-icon {
+  display: inline-flex;
+  margin-right: 0.75rem;
+  font-size: 1.1rem;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-text {
+  font-size: 0.95rem;
+}
+
+/* Animación para los iconos en hover */
+.sidebar-menu-item:hover .menu-icon {
+  transform: scale(1.2);
+  transition: transform 0.2s ease;
+}
