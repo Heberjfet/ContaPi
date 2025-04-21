@@ -28,14 +28,6 @@ function Sidebar({ setVistaActual, vistaActual }) {
     <>
       <aside className="sidebar-container bg-gradient-dark text-white">
         <div className="d-flex flex-column h-100">
-          <div className="sidebar-header mb-4">
-            <h5 className="mb-3 text-center">
-              <span className="text-primary fw-bold">CONTA</span>
-              <span className="text-light">PI</span>
-            </h5>
-            <div className="sidebar-divider"></div>
-          </div>
-
           <nav className="mb-4">
             <div className="menu-title ps-2 mb-2">REPORTES</div>
             <div className="d-flex flex-column gap-1">

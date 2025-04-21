@@ -1,9 +1,21 @@
 .sidebar-container {
   width: 250px;
   padding: 1.5rem 0.75rem;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.sidebar-container.closed {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.sidebar-container.open {
+  transform: translateX(0);
+  opacity: 1;
 }
 
 .sidebar-header {

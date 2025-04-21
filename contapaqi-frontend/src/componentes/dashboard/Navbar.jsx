@@ -34,7 +34,7 @@ function Navbar({ nombre, toggleSidebar }) {
               height="50"
               className="me-2"
             />
-            <span className="navbar-brand mb-0">Contapi</span>
+            <span className="navbar-brand mb-0">ContaPi</span>
           </div>
         </div>
         
