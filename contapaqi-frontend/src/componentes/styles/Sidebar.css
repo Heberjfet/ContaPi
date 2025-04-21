@@ -1,20 +1,27 @@
 .sidebar-container {
   width: 250px;
-  padding: 1.5rem 0.75rem;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  height: 100vh;
   background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: transform 0.3s ease, visibility 0.3s ease;
+  overflow: hidden;
+  padding: 1.5rem 0.75rem;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   transform: translateX(0);
   opacity: 1;
 }
 
 .sidebar-container.closed {
   transform: translateX(-100%);
+  width: 0;
   opacity: 0;
 }
 
 .sidebar-container.open {
   transform: translateX(0);
+  width: 250px;
   opacity: 1;
 }
 

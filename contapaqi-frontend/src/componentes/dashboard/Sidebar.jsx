@@ -11,7 +11,12 @@ import { Modal, Button } from "react-bootstrap"; // Importar componentes de Reac
 import Settings from "./Ajustes"; // Importar el componente Ajustes
 import "../styles/Sidebar.css";
 
-function Sidebar({ setVistaActual, vistaActual }) {
+function Sidebar({
+  setVistaActual,
+  vistaActual,
+  isSidebarOpen,
+  toggleSidebar,
+}) {
   const navigate = useNavigate();
   const [showSettings, setShowSettings] = useState(false); // Estado para controlar el modal
 
@@ -26,7 +31,15 @@ function Sidebar({ setVistaActual, vistaActual }) {
 
   return (
     <>
-      <aside className="sidebar-container bg-gradient-dark text-white">
+      <div
+        className={`sidebar-container bg-gradient-dark text-white ${
+          isSidebarOpen ? "open" : "closed"
+        }`}
+        style={{
+          width: isSidebarOpen ? "250px" : "0",
+          transition: "width 0.3s ease",
+        }}
+      >
         <div className="d-flex flex-column h-100">
           <nav className="mb-4">
             <div className="menu-title ps-2 mb-2">REPORTES</div>
@@ -71,21 +84,21 @@ function Sidebar({ setVistaActual, vistaActual }) {
             </button>
           </div>
         </div>
-      </aside>
+      </div>
 
       {/* Modal para Ajustes */}
       <Modal show={showSettings} onHide={handleCloseSettings} centered>
         <Modal.Header closeButton className="border-0 pb-0">
-         <Modal.Title className="fw-bold">⚙️ Ajustes</Modal.Title>
+          <Modal.Title className="fw-bold">⚙️ Ajustes</Modal.Title>
         </Modal.Header>
-          <Modal.Body>
-            <Settings />
-          </Modal.Body>
-            <Modal.Footer className="border-0 pt-0">
-            <Button variant="secondary" onClick={handleCloseSettings}>
-             Cerrar
-            </Button>
-          </Modal.Footer>
+        <Modal.Body>
+          <Settings />
+        </Modal.Body>
+        <Modal.Footer className="border-0 pt-0">
+          <Button variant="secondary" onClick={handleCloseSettings}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
       </Modal>
     </>
   );

@@ -14,7 +14,6 @@ function Homepage() {
   const nombre =
     location.state?.nombre || localStorage.getItem("nombre") || "Usuario";
 
-  const [showSidebar, setShowSidebar] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [vistaActual, setVistaActual] = useState("Recientes");
   const [empresas, setEmpresas] = useState([
@@ -40,6 +39,12 @@ function Homepage() {
       fecha: new Date(2024, 2, 20),
     },
   ]);
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen((prev) => !prev);
+  };
 
   // Memoizar la función de filtrado
   const empresasFiltradas = useCallback(() => {
@@ -100,87 +105,96 @@ function Homepage() {
     setShowModal(false);
   }, []);
 
-  const toggleSidebar = useCallback(() => {
-    setShowSidebar((prev) => !prev);
-  }, []);
-
   return (
-    <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>
-      <Navbar nombre={nombre} toggleSidebar={toggleSidebar} />
-
-      <div className="d-flex flex-grow-1">
-        {showSidebar && (
-          <Sidebar setVistaActual={setVistaActual} vistaActual={vistaActual} />
-        )}
-
-        <main className="flex-grow-1 p-4 bg-light">
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <div>
-              <h2 className="mb-1">Empresas</h2>
-              <p className="text-muted mb-0">Vista: {vistaActual}</p>
-            </div>
-            <button
-              className="btn btn-primary"
-              onClick={() => setShowModal(true)}
-            >
-              <FaPlus className="me-2" /> Agregar Empresa
-            </button>
-          </div>
-
-          <div className="mb-4">
-            <div className="btn-group">
-              {["Recientes", "Todos"].map((vista) => (
-                <button
-                  key={vista}
-                  className={`btn ${
-                    vistaActual === vista
-                      ? "btn-primary"
-                      : "btn-outline-primary"
-                  }`}
-                  onClick={() => setVistaActual(vista)}
-                >
-                  {vista}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <EmpresasList
-            empresas={empresasFiltradas()}
-            handleFavorito={handleFavorito}
-          />
-        </main>
-      </div>
-
-      {/* Modal para agregar empresa */}
-      {showModal && (
-        <div
-          className="modal d-block"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setShowModal(false);
-          }}
-        >
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Agregar Empresa</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setShowModal(false)}
-                ></button>
+    <div className="d-flex">
+      <Sidebar
+        setVistaActual={setVistaActual}
+        vistaActual={vistaActual}
+        isSidebarOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+      />
+      <div
+        className="flex-grow-1"
+        style={{
+          marginLeft: isSidebarOpen ? "250px" : "0", // Ajusta el margen dinámicamente
+          transition: "margin-left 0.3s ease", // Añade una transición suave
+        }}
+      >
+        <Navbar
+          nombre={nombre}
+          toggleSidebar={toggleSidebar}
+          isSidebarOpen={isSidebarOpen}
+        />
+        <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>
+          <main className="flex-grow-1 p-4 bg-light">
+            <div className="d-flex justify-content-between align-items-center mb-4">
+              <div>
+                <h2 className="mb-1">Empresas</h2>
+                <p className="text-muted mb-0">Vista: {vistaActual}</p>
               </div>
-              <div className="modal-body">
-                <AgregarEmpresa
-                  onAgregar={handleAgregarEmpresa}
-                  onCancelar={() => setShowModal(false)}
-                />
+              <button
+                className="btn btn-primary"
+                onClick={() => setShowModal(true)}
+              >
+                <FaPlus className="me-2" /> Agregar Empresa
+              </button>
+            </div>
+
+            <div className="mb-4">
+              <div className="btn-group">
+                {["Recientes", "Todos"].map((vista) => (
+                  <button
+                    key={vista}
+                    className={`btn ${
+                      vistaActual === vista
+                        ? "btn-primary"
+                        : "btn-outline-primary"
+                    }`}
+                    onClick={() => setVistaActual(vista)}
+                  >
+                    {vista}
+                  </button>
+                ))}
               </div>
             </div>
-          </div>
+
+            <EmpresasList
+              empresas={empresasFiltradas()}
+              handleFavorito={handleFavorito}
+            />
+          </main>
         </div>
-      )}
+
+        {/* Modal para agregar empresa */}
+        {showModal && (
+          <div
+            className="modal d-block"
+            style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setShowModal(false);
+            }}
+          >
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Agregar Empresa</h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    onClick={() => setShowModal(false)}
+                  ></button>
+                </div>
+                <div className="modal-body">
+                  <AgregarEmpresa
+                    onAgregar={handleAgregarEmpresa}
+                    onCancelar={() => setShowModal(false)}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
