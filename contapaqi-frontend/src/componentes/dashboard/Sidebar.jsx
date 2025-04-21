@@ -64,7 +64,7 @@ function Sidebar({ setVistaActual, vistaActual }) {
 
           <button
             className="sidebar-menu-item"
-            onClick={() => navigate("/ajustes")}
+            onClick={() => navigate("/Ajustes")}
           >
             <span className="menu-icon">
               <FaCog />

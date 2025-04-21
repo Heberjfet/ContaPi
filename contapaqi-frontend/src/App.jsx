@@ -6,7 +6,8 @@ import LoginForm from "./componentes/Autenticacion/LoginForm";
 import Homepage from "./componentes/dashboard/Homepage";
 import AgregarEmpresa from "./componentes/empresa/AgregarEmpresa";
 import RegistrarTransaccion from "./componentes/empresa/registrartransaccion";
-import DescargaMasivas from "./componentes/empresa/DescargaMasivas"; // Ajusta la ruta según tu estructura
+import DescargaMasivas from "./componentes/empresa/DescargaMasivas";
+import Ajustes from "./componentes/dashboard/Ajustes"; // Ajusta la ruta según tu estructura
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           element={<RegistrarTransaccion />}
         />
         <Route path="/descarga-masiva" element={<DescargaMasivas />} />
+        <Route path="/Ajustes" element={<Settings />} />
       </Routes>
     </Router>
   );
