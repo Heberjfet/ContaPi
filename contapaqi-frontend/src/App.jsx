@@ -23,7 +23,7 @@ function App() {
           element={<RegistrarTransaccion />}
         />
         <Route path="/descarga-masiva" element={<DescargaMasivas />} />
-        <Route path="/Ajustes" element={<Settings />} />
+        <Route path="/Settings" element={<Ajustes />} />
       </Routes>
     </Router>
   );
