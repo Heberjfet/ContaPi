@@ -116,7 +116,7 @@ function Homepage() {
       <div
         className="flex-grow-1"
         style={{
-          marginLeft: isSidebarOpen ? "250px" : "0", // Ajusta el margen dinámicamente
+          marginLeft: isSidebarOpen ? "200px" : "0", // Ajusta el margen dinámicamente
           transition: "margin-left 0.3s ease", // Añade una transición suave
         }}
       >

@@ -36,13 +36,13 @@ function Sidebar({
           isSidebarOpen ? "open" : "closed"
         }`}
         style={{
-          width: isSidebarOpen ? "250px" : "0",
+          width: isSidebarOpen ? "200px" : "0",
           transition: "width 0.3s ease",
         }}
       >
         <div className="d-flex flex-column h-100">
           <nav className="mb-4">
-            <div className="menu-title ps-2 mb-2">REPORTES</div>
+            <div className="menu-title ps-2 mb-2 p-2">REPORTES</div>
             <div className="d-flex flex-column gap-1">
               {menuItems.map((item) => (
                 <button

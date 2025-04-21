@@ -1,7 +1,7 @@
 .sidebar-container {
-  width: 250px;
+  width: 200px;
   height: 100vh;
-  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+  background: linear-gradient(180deg, #160041 0%, #16213e 100%);
   position: fixed;
   top: 0;
   left: 0;
@@ -21,7 +21,7 @@
 
 .sidebar-container.open {
   transform: translateX(0);
-  width: 250px;
+  width: 200px;
   opacity: 1;
 }
 
