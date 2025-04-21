@@ -9,7 +9,7 @@ import {
 } from "react-icons/fa";
 import { Modal, Button } from "react-bootstrap"; // Importar componentes de React-Bootstrap
 import Settings from "./Ajustes"; // Importar el componente Ajustes
-import "./Sidebar.css";
+import "../styles/Sidebar.css";
 
 function Sidebar({ setVistaActual, vistaActual }) {
   const navigate = useNavigate();
@@ -83,17 +83,17 @@ function Sidebar({ setVistaActual, vistaActual }) {
 
       {/* Modal para Ajustes */}
       <Modal show={showSettings} onHide={handleCloseSettings} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Ajustes</Modal.Title>
+        <Modal.Header closeButton className="border-0 pb-0">
+         <Modal.Title className="fw-bold">⚙️ Ajustes</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <Settings /> {/* Renderizar el componente Ajustes dentro del modal */}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseSettings}>
-            Cerrar
-          </Button>
-        </Modal.Footer>
+          <Modal.Body>
+            <Settings />
+          </Modal.Body>
+            <Modal.Footer className="border-0 pt-0">
+            <Button variant="secondary" onClick={handleCloseSettings}>
+             Cerrar
+            </Button>
+          </Modal.Footer>
       </Modal>
     </>
   );

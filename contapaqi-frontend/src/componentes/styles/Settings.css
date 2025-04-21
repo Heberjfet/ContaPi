@@ -1,0 +1,61 @@
+/* renombramos .fade → .fade-in */
+.tabs {
+    display: flex;
+    position: relative;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 1rem;
+  }
+  
+  .tab-item {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem 0;
+    background: none;
+    border: none;
+    font-weight: 500;
+    color: #6c757d;
+    cursor: pointer;
+  }
+  
+  .tab-item.active {
+    color: #0d6efd;
+  }
+  
+  .tab-indicator {
+    position: absolute;
+    bottom: 0;
+    height: 3px;
+    width: 50%;
+    background-color: #0d6efd;
+    transition: left 0.3s ease;
+    left: 0;
+  }
+  
+  .tab-indicator.settings {
+    left: 50%;
+  }
+  
+  .tab-content {
+    min-height: 200px; /* ajusta según contenido */
+  }
+  
+  /* animación renombrada */
+  .fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  
+  .list-group-item {
+    border: none;
+    padding-left: 0;
+  }
+  
+  .list-group-item i {
+    width: 1.2rem;
+    font-size: 1rem;
+  }
+  
