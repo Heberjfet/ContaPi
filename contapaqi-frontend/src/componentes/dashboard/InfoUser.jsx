@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "../styles/UserDropdown.css";
 
-const InfoUser = ({ isOpen, onClose, userData }) => {
+const InfoUser = ({ isOpen, onClose, userData, onOpenSettings }) => {
   const dropdownRef = useRef(null);
 
   // Cerrar el dropdown cuando se hace clic fuera
@@ -17,7 +17,7 @@ const InfoUser = ({ isOpen, onClose, userData }) => {
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
-    
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -30,14 +30,16 @@ const InfoUser = ({ isOpen, onClose, userData }) => {
     // window.location.href = "/";
   };
 
+  const handleEditProfile = () => {
+    onClose(); // Cerrar el dropdown
+    if (onOpenSettings) onOpenSettings(); // Abrir configuración de perfil
+  };
+
   if (!isOpen) return null;
 
   return (
     <div className="user-dropdown-backdrop">
-      <div 
-        ref={dropdownRef} 
-        className="user-dropdown-container"
-      >
+      <div ref={dropdownRef} className="user-dropdown-container">
         {/* Header con información del usuario (sin avatar) */}
         <div className="user-header">
           <div className="d-flex align-items-center p-3">
@@ -46,7 +48,10 @@ const InfoUser = ({ isOpen, onClose, userData }) => {
               <h5 className="mb-0">{userData.nombre}</h5>
               <p className="mb-0 text-muted small">{userData.rol}</p>
             </div>
-            <button className="ms-auto btn text-danger border-0" onClick={handleLogout}>
+            <button
+              className="ms-auto btn text-danger border-0"
+              onClick={handleLogout}
+            >
               <i className="bi bi-power"></i>
             </button>
           </div>
@@ -62,7 +67,7 @@ const InfoUser = ({ isOpen, onClose, userData }) => {
 
         {/* Opciones de perfil */}
         <div className="profile-options">
-          <button className="profile-option-item" onClick={onClose}>
+          <button className="profile-option-item" onClick={handleEditProfile}>
             <i className="bi bi-pencil me-2"></i>
             Editar Perfil
           </button>
@@ -72,7 +77,7 @@ const InfoUser = ({ isOpen, onClose, userData }) => {
           </button>
           <button className="profile-option-item" onClick={handleLogout}>
             <i className="bi bi-power me-2"></i>
-            Cerrar Sesion 
+            Cerrar Sesion
           </button>
         </div>
       </div>
