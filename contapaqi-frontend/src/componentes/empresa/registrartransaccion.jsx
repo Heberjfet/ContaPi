@@ -1,30 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  FaBars,
-  FaCog,
-  FaDownload
-} from "react-icons/fa";
+import Navbar from "../dashboard/Navbar"; // Ajustar ruta según estructura
+import Sidebar from "../dashboard/Sidebar"; // Ajustar ruta según estructura
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
 
 const RegistrarTransaccion = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  
+  // 🔴 Mantenemos TODAS las variables de estado originales
   const nombreEmpresa = location.state?.nombreEmpresa || "Empresa no especificada";
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
-  const nombreUsuario = usuario?.nombre || "Usuario";
+  const nombre = location.state?.nombre || localStorage.getItem("nombre") || "Usuario";
   const [fechaActual, setFechaActual] = useState("");
-
-  useEffect(() => {
-    const hoy = new Date();
-    const fechaFormateada = hoy.toLocaleDateString("es-MX", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-    setFechaActual(fechaFormateada);
-  }, []);
 
   const [formData, setFormData] = useState({
     fecha: "",
@@ -36,8 +25,21 @@ const RegistrarTransaccion = () => {
 
   const [transacciones, setTransacciones] = useState([]);
   const [archivoXML, setArchivoXML] = useState(null);
-  const [showSidebar, setShowSidebar] = useState(true);
 
+  // ✅ Funcionalidad original intacta
+  useEffect(() => {
+    const hoy = new Date();
+    const fechaFormateada = hoy.toLocaleDateString("es-MX", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+    setFechaActual(fechaFormateada);
+  }, []);
+
+  const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
+
+  // 🟠 Manejadores de eventos SIN MODIFICAR
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -63,31 +65,30 @@ const RegistrarTransaccion = () => {
   };
 
   return (
-    <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>
-      {/* Header */}
-      <nav className="navbar navbar-dark py-3" style={{ backgroundColor: "#160041" }}>
-        <div className="container-fluid">
-          <div className="d-flex align-items-center">
-            <button className="btn btn-link text-white me-3" onClick={() => setShowSidebar(!showSidebar)}>
-              <FaBars size={20} />
-            </button>
-            <div className="d-flex align-items-center">
-            <img
-             src="https://cdn-icons-png.flaticon.com/512/6194/6194029.png"
-             alt="Logo"
-             width="30"
-              height="30"
-              className="me-2"
-            />
-         <Link to="/homepage" className="navbar-brand mb-0 text-white text-decoration-none">
-            Contapi
-        </Link>
-            </div>
-          </div>
-          <span className="text-white">Bienvenido, {nombreUsuario}</span>
-        </div>
-      </nav>
-        {/* Contenido principal */}
+    <div className="d-flex">
+      {/* 🔄 Nuevo Sidebar integrado */}
+      <Sidebar
+        isSidebarOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+        vistaActual="Transacciones"
+      />
+
+      <div 
+        className="flex-grow-1"
+        style={{
+          marginLeft: isSidebarOpen ? "200px" : "0",
+          transition: "margin-left 0.3s ease",
+          minHeight: "100vh"
+        }}
+      >
+        {/* 🔄 Nuevo Navbar integrado */}
+        <Navbar 
+          nombre={nombre}
+          toggleSidebar={toggleSidebar}
+          isSidebarOpen={isSidebarOpen}
+        />
+
+        {/* 🟢 Contenido original SIN CAMBIOS */}
         <main className="flex-grow-1 p-4 bg-light">
           <div className="text-center mb-4">
             <h2 className="fw-bold">{nombreEmpresa}</h2>
@@ -165,6 +166,7 @@ const RegistrarTransaccion = () => {
           </div>
         </main>
       </div>
+    </div>
   );
 };
 
