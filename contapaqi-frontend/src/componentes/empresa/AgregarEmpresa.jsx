@@ -58,7 +58,6 @@ function AgregarEmpresa() {
 
     return (
         <div className="container mt-5">
-            <h2>Agregar Nueva Empresa</h2>
             {error && <div className="alert alert-danger">{error}</div>}
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">

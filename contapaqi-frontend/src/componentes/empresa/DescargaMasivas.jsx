@@ -15,7 +15,6 @@ const DescargaMasivas = () => {
     true,
     true
   ]);
-
   const nombre =
     location.state?.nombre || localStorage.getItem("nombre") || "Usuario";
 
@@ -44,7 +43,11 @@ const DescargaMasivas = () => {
             >
               <FaBars size={20} />
             </button>
-            <div className="d-flex align-items-center">
+            <div 
+              className="d-flex align-items-center"
+              onClick={() => navigate('/homepage')}
+              style={{ cursor: 'pointer' }}
+            >
               <img
                 src="/logo.png"
                 alt="Logo Contapi"
@@ -58,10 +61,10 @@ const DescargaMasivas = () => {
           <span className="text-white">Bienvenido, {nombre}</span>
         </div>
       </nav>
-      
+     
       <div className="container">
         <h2 className="page-title">Descarga Masiva de Documentos</h2>
-        
+       
         <div className="table-container">
           <table className="data-table">
             <thead>
@@ -97,7 +100,7 @@ const DescargaMasivas = () => {
             </tbody>
           </table>
         </div>
-        
+       
         <div className="actions-container">
           <button
             className="btn-action btn-primary-action"
