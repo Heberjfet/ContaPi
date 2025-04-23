@@ -3,9 +3,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "../styles/UserDropdown.css";
 
-const InfoUser = ({ isOpen, onClose, userData, onOpenSettings }) => {
+const InfoUser = ({ isOpen, onClose, userData, onOpenSettings, isHomePage }) => {
   const dropdownRef = useRef(null);
-
+  
   // Cerrar el dropdown cuando se hace clic fuera
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -13,30 +13,28 @@ const InfoUser = ({ isOpen, onClose, userData, onOpenSettings }) => {
         onClose();
       }
     };
-
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen, onClose]);
-
+  
   const handleLogout = () => {
     alert("Has salido de la cuenta");
     onClose();
     // Aquí puedes añadir la lógica de logout, como redirigir al login
     // window.location.href = "/";
   };
-
+  
   const handleEditProfile = () => {
     onClose(); // Cerrar el dropdown
     if (onOpenSettings) onOpenSettings(); // Abrir configuración de perfil
   };
-
+  
   if (!isOpen) return null;
-
+  
   return (
     <div className="user-dropdown-backdrop">
       <div ref={dropdownRef} className="user-dropdown-container">
@@ -56,7 +54,6 @@ const InfoUser = ({ isOpen, onClose, userData, onOpenSettings }) => {
             </button>
           </div>
         </div>
-
         {/* Separador con título "Profile" */}
         <div className="border-bottom px-3 py-2">
           <div className="d-flex align-items-center">
@@ -64,13 +61,15 @@ const InfoUser = ({ isOpen, onClose, userData, onOpenSettings }) => {
             <span className="text-primary">Perfil</span>
           </div>
         </div>
-
         {/* Opciones de perfil */}
         <div className="profile-options">
-          <button className="profile-option-item" onClick={handleEditProfile}>
-            <i className="bi bi-pencil me-2"></i>
-            Editar Perfil
-          </button>
+          {/* Mostrar "Editar Perfil" solo si está en Homepage */}
+          {isHomePage && (
+            <button className="profile-option-item" onClick={handleEditProfile}>
+              <i className="bi bi-pencil me-2"></i>
+              Editar Perfil
+            </button>
+          )}
           <button className="profile-option-item" onClick={onClose}>
             <i className="bi bi-person me-2"></i>
             Ver Perfil
