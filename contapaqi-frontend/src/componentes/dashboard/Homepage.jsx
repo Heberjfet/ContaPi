@@ -11,8 +11,7 @@ import EmpresasList from "./EmpresasList";
 function Homepage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const nombre =
-    location.state?.nombre || localStorage.getItem("nombre") || "Usuario";
+  const nombre = location.state?.nombre || localStorage.getItem("nombre") || "Usuario";
 
   const [showModal, setShowModal] = useState(false);
   const [vistaActual, setVistaActual] = useState("Recientes");
