@@ -12,7 +12,7 @@ function RecuperarPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3000/recuperar-password", { email });
+      await axios.post("http://localhost:3001/recuperar-password", { email });
       setMessage(
         "Se ha enviado un enlace a tu correo para recuperar tu contraseña"
       );

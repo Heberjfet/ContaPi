@@ -43,7 +43,7 @@ function AgregarEmpresa() {
     }
 
     try {
-      const response = await axios.post('http://localhost:3000/empresas', {
+      const response = await axios.post('http://localhost:3002/empresas', {
         ...formData,
         usuario_id: usuario.id,
       });

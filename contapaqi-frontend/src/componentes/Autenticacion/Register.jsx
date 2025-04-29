@@ -19,7 +19,7 @@ function Register() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:3000/usuarios",
+        "http://localhost:3001/usuarios",
         formData
       );
       alert("Registro exitoso");
