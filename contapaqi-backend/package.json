@@ -3,16 +3,23 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node gateway.js",
+    "start:gateway": "node gateway.js",
+    "start:usuarios": "node services/usuarios-service.js",
+    "start:empresas": "node services/empresas-service.js",
+    "start:cuentas": "node services/cuentas-service.js",
+    "start:all": "concurrently \"npm run start:gateway\" \"npm run start:usuarios\" \"npm run start:empresas\" \"npm run start:cuentas\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "body-parser": "^1.20.3",
+    "concurrently": "^9.1.2",
     "cors": "^2.8.5",
     "express": "^4.21.2",
-    "mysql2": "^3.13.0"
-  }
+    "http-proxy-middleware": "^3.0.5",
+    "mysql2": "^3.14.1"
+  },
+  "description": ""
 }
