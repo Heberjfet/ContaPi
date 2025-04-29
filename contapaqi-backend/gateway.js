@@ -16,10 +16,28 @@ const proxyOptions = {
 };
 
 // Configuración de proxies para cada servicio
-app.use('/api/usuarios', createProxyMiddleware({ 
-    ...proxyOptions,
+app.use('/api/usuarios', createProxyMiddleware({
     target: 'http://localhost:3001',
-    pathRewrite: {'^/api/usuarios': ''}
+    changeOrigin: true,
+    pathRewrite: {
+        '^/api/usuarios': '/' // Reescribe /api/usuarios -> /
+    }
+}));
+
+app.use('/api/usuarios/login', createProxyMiddleware({
+    target: 'http://localhost:3001',
+    changeOrigin: true,
+    pathRewrite: {
+        '^/api/usuarios/login': '/login' // Reescribe /api/usuarios/login -> /login
+    }
+}));
+
+app.use('/api/usuarios/recuperar-password', createProxyMiddleware({
+    target: 'http://localhost:3001',
+    changeOrigin: true,
+    pathRewrite: {
+        '^/api/usuarios/recuperar-password': '/recuperar-password'
+    }
 }));
 
 app.use('/api/empresas', createProxyMiddleware({ 
