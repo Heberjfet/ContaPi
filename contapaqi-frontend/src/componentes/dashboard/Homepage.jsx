@@ -16,35 +16,35 @@ function Homepage() {
 
   const [showModal, setShowModal] = useState(false);
   const [vistaActual, setVistaActual] = useState("Recientes");
-  const [empresas, setEmpresas] = useState([
-    {
-      id: 1,
-      nombre: "Pizza's Mora S.A.",
-      tipo: "Balance General",
-      favorita: true,
-      fecha: new Date(2024, 2, 1),
-    },
-    {
-      id: 2,
-      nombre: "Taquerias don Omar",
-      tipo: "Libro Diario",
-      favorita: false,
-      fecha: new Date(2024, 2, 15),
-    },
-    {
-      id: 3,
-      nombre: "Impresiones Heber",
-      tipo: "Libro Mayor",
-      favorita: false,
-      fecha: new Date(2024, 2, 20),
-    },
-  ]);
-
+  const [empresas, setEmpresas] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
   };
+
+  // Obtener empresas desde el backend
+  useEffect(() => {
+    const fetchEmpresas = async () => {
+      try {
+        const response = await fetch("http://localhost:3002/empresas"); // Cambia el puerto si es necesario
+        if (!response.ok) {
+          throw new Error("Error al obtener las empresas");
+        }
+        const data = await response.json();
+        const empresasConFechas = data.map((empresa) => ({
+          ...empresa,
+          fecha: new Date(empresa.fecha), // Convierte la fecha a un objeto Date
+        }));
+        setEmpresas(empresasConFechas);
+      } catch (error) {
+        console.error(error);
+        alert("Hubo un problema al cargar las empresas.");
+      }
+    };
+
+    fetchEmpresas();
+  }, []);
 
   // Memoizar la función de filtrado
   const empresasFiltradas = useCallback(() => {
@@ -58,29 +58,6 @@ function Homepage() {
         return copiaEmpresas.filter((e) => e.tipo === vistaActual);
     }
   }, [empresas, vistaActual]);
-
-  // Guardar cambios en localStorage
-  useEffect(() => {
-    localStorage.setItem("empresas", JSON.stringify(empresas));
-  }, [empresas]);
-
-  // Cargar datos de localStorage al iniciar
-  useEffect(() => {
-    const empresasGuardadas = localStorage.getItem("empresas");
-    if (empresasGuardadas) {
-      try {
-        // Convertir las fechas string de vuelta a objetos Date
-        const parsed = JSON.parse(empresasGuardadas);
-        const empresasConFechas = parsed.map((empresa) => ({
-          ...empresa,
-          fecha: new Date(empresa.fecha),
-        }));
-        setEmpresas(empresasConFechas);
-      } catch (e) {
-        console.error("Error al cargar empresas:", e);
-      }
-    }
-  }, []);
 
   const handleFavorito = useCallback((id) => {
     setEmpresas((prevEmpresas) =>
@@ -116,8 +93,8 @@ function Homepage() {
       <div
         className="flex-grow-1"
         style={{
-          marginLeft: isSidebarOpen ? "200px" : "0", // Ajusta el margen dinámicamente
-          transition: "margin-left 0.3s ease", // Añade una transición suave
+          marginLeft: isSidebarOpen ? "200px" : "0",
+          transition: "margin-left 0.3s ease",
         }}
       >
         <Navbar

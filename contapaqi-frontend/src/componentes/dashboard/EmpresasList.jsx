@@ -1,45 +1,32 @@
 import React from "react";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-function EmpresasList({ empresas, handleFavorito }) {
+const EmpresasList = ({ empresas }) => {
+  const navigate = useNavigate();
+
+  const handleEmpresaClick = (empresa) => {
+    navigate("/registrartransaccion", {
+      state: { nombreEmpresa: empresa.nombre, empresaId: empresa.id },
+    });
+  };
+
   return (
-    <div className="card shadow-sm">
-      <div className="card-body p-0">
-        {empresas.length > 0 ? (
-          empresas.map((empresa) => (
-            <div
-              key={empresa.id}
-              className="d-flex justify-content-between align-items-center p-3 border-bottom"
-            >
-              <div>
-                <h5 className="mb-1">{empresa.nombre}</h5>
-                <small className="text-muted">{empresa.tipo}</small>
-              </div>
-              <button
-                className="btn btn-link text-decoration-none"
-                onClick={() => handleFavorito(empresa.id)}
-                aria-label={
-                  empresa.favorita
-                    ? "Quitar de favoritos"
-                    : "Añadir a favoritos"
-                }
-              >
-                {empresa.favorita ? (
-                  <FaHeart color="red" size={20} />
-                ) : (
-                  <FaRegHeart size={20} />
-                )}
-              </button>
-            </div>
-          ))
-        ) : (
-          <div className="p-3 text-center text-muted">
-            No hay empresas para mostrar
+    <div className="list-group">
+      {empresas.map((empresa) => (
+        <button
+          key={empresa.id}
+          className="list-group-item list-group-item-action"
+          onClick={() => handleEmpresaClick(empresa)}
+        >
+          <div className="d-flex justify-content-between align-items-center">
+            <h5 className="mb-1">{empresa.nombre}</h5>
+            <small className="text-muted">{empresa.rfc}</small>
           </div>
-        )}
-      </div>
+          <p className="mb-1 text-muted">{empresa.direccion}</p>
+        </button>
+      ))}
     </div>
   );
-}
+};
 
 export default EmpresasList;
