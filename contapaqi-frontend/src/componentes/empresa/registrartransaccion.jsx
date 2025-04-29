@@ -22,6 +22,8 @@ const RegistrarTransaccion = () => {
   });
   const [transacciones, setTransacciones] = useState([]);
   const [archivoXML, setArchivoXML] = useState(null);
+  const [cuentasMadre, setCuentasMadre] = useState([]);
+  const [subcuentas, setSubcuentas] = useState([]); // Estado para las subcuentas
 
   useEffect(() => {
     const hoy = new Date();
@@ -33,13 +35,31 @@ const RegistrarTransaccion = () => {
     setFechaActual(fechaFormateada);
   }, []);
 
+  useEffect(() => {
+    const fetchCuentasMadre = async () => {
+      try {
+        const response = await fetch("http://localhost:3003/cuentas-madre"); // Cambia el puerto si es necesario
+        if (!response.ok) {
+          throw new Error("Error al obtener las cuentas madre");
+        }
+        const data = await response.json();
+        setCuentasMadre(data);
+      } catch (error) {
+        console.error(error);
+        alert("Hubo un problema al cargar las cuentas madre.");
+      }
+    };
+
+    fetchCuentasMadre();
+  }, []);
+
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (
       !formData.fecha ||
@@ -51,16 +71,86 @@ const RegistrarTransaccion = () => {
       return;
     }
 
-    // Aquí puedes enviar los datos al backend, incluyendo el `empresaId`
-    console.log("Transacción registrada:", { ...formData, empresaId });
-    setTransacciones([...transacciones, { ...formData, empresaId }]);
-    setFormData({
-      fecha: "",
-      descripcion: "",
-      cuenta: "",
-      subcuenta: "",
-      monto: "",
-    });
+    let subcuentaId = formData.subcuenta || null;
+
+    // Guardar la subcuenta si no existe
+    if (
+      formData.subcuenta &&
+      !subcuentas.some((s) => s.nombre === formData.subcuenta)
+    ) {
+      try {
+        const response = await fetch("http://localhost:3004/subcuentas", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nombre: formData.subcuenta,
+            cuenta_madre_id: formData.cuenta,
+            empresa_id: empresaId,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Error al guardar la subcuenta");
+        }
+
+        const data = await response.json();
+        subcuentaId = data.id;
+
+        // Actualizar la lista de subcuentas localmente
+        setSubcuentas([
+          ...subcuentas,
+          { id: data.id, nombre: formData.subcuenta },
+        ]);
+      } catch (error) {
+        console.error(error);
+        alert("Hubo un problema al guardar la subcuenta.");
+        return;
+      }
+    }
+
+    const nuevaTransaccion = {
+      fecha: formData.fecha,
+      descripcion: formData.descripcion,
+      monto: parseFloat(formData.monto),
+      empresa_id: empresaId,
+      cuenta_madre_id: formData.cuenta,
+      subcuenta_id: subcuentaId,
+    };
+
+    try {
+      const response = await fetch("http://localhost:3005/transacciones", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(nuevaTransaccion),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al guardar la transacción");
+      }
+
+      const data = await response.json();
+      alert(data.message);
+
+      // Actualizar la lista de transacciones localmente
+      setTransacciones([
+        ...transacciones,
+        { ...nuevaTransaccion, id: data.id },
+      ]);
+      setFormData({
+        fecha: "",
+        descripcion: "",
+        cuenta: "",
+        subcuenta: "",
+        monto: "",
+      });
+    } catch (error) {
+      console.error(error);
+      alert("Hubo un problema al guardar la transacción.");
+    }
   };
 
   const handleXMLChange = (e) => {
@@ -126,26 +216,38 @@ const RegistrarTransaccion = () => {
                   required
                 />
               </div>
-              <div className="col-md-2">
-                <label className="form-label">Cuenta</label>
-                <input
-                  type="text"
+              <div className="col-md-3">
+                <label className="form-label">Cuenta Madre</label>
+                <select
                   name="cuenta"
                   className="form-control"
                   value={formData.cuenta}
                   onChange={handleChange}
                   required
-                />
+                >
+                  <option value="">Selecciona una cuenta madre</option>
+                  {cuentasMadre.map((cuenta) => (
+                    <option key={cuenta.id} value={cuenta.id}>
+                      {cuenta.nombre}
+                    </option>
+                  ))}
+                </select>
               </div>
-              <div className="col-md-2">
+              <div className="col-md-3">
                 <label className="form-label">Subcuenta</label>
                 <input
                   type="text"
                   name="subcuenta"
                   className="form-control"
+                  list="subcuentas-list"
                   value={formData.subcuenta}
                   onChange={handleChange}
                 />
+                <datalist id="subcuentas-list">
+                  {subcuentas.map((subcuenta) => (
+                    <option key={subcuenta.id} value={subcuenta.nombre} />
+                  ))}
+                </datalist>
               </div>
               <div className="col-md-2">
                 <label className="form-label">Monto</label>

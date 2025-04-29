@@ -9,7 +9,7 @@ const dbConfig = {
   host: 'localhost',          // Dirección del servidor MySQL
   user: 'root-contapi',       // Usuario de la base de datos
   password: 'Contapi12@',     // Contraseña del usuario
-  database: 'contapi',      // Nombre de la nueva base de datos
+  database: 'contapi',        // Nombre de la nueva base de datos
 };
 
 // Función genérica para levantar un microservicio
@@ -45,3 +45,4 @@ require('./services/usuarios');
 require('./services/empresas');
 require('./services/cuentasmadre');
 require('./services/subcuentas');
+require('./services/transacciones'); // Nuevo microservicio para transacciones
