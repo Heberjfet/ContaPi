@@ -13,23 +13,28 @@ app.use(bodyParser.json());
 // Opciones compartidas para todos los proxies
 const proxyOptions = {
   changeOrigin: true,
-  logLevel: 'silent', // Reduce logs innecesarios
+  logLevel: 'silent' // Reduce logs innecesarios
 };
 
 // Configuración de proxies para cada servicio
 <<<<<<< HEAD
 app.use('/api/usuarios', createProxyMiddleware({
-  ...proxyOptions,
-  target: 'http://localhost:3001', // Servicio de usuarios
-  pathRewrite: { '^/api/usuarios': '' }, // Reescribe /api/usuarios -> /
+    target: 'http://localhost:3001',
+    changeOrigin: true,
+    pathRewrite: {
+        '^/api/usuarios': '/' // Reescribe /api/usuarios -> /
+    }
 }));
 
-app.use('/api/empresas', createProxyMiddleware({
-  ...proxyOptions,
-  target: 'http://localhost:3002', // Servicio de empresas
-  pathRewrite: { '^/api/empresas': '' }, // Reescribe /api/empresas -> /
+app.use('/api/usuarios/login', createProxyMiddleware({
+    target: 'http://localhost:3001',
+    changeOrigin: true,
+    pathRewrite: {
+        '^/api/usuarios/login': '/login' // Reescribe /api/usuarios/login -> /login
+    }
 }));
 
+<<<<<<< HEAD
 app.use('/api/cuentas', createProxyMiddleware({
   ...proxyOptions,
   target: 'http://localhost:3003', // Servicio de cuentas
@@ -59,8 +64,28 @@ app.use('/api/cuentas', createProxyMiddleware({
     pathRewrite: {'^/api/cuentas': ''},
     changeOrigin: true
 >>>>>>> parent of 2d8526b (Refactor configuración de proxies en gateway.js y simplificación de scripts en binarios)
+=======
+app.use('/api/usuarios/recuperar-password', createProxyMiddleware({
+    target: 'http://localhost:3001',
+    changeOrigin: true,
+    pathRewrite: {
+        '^/api/usuarios/recuperar-password': '/recuperar-password'
+    }
+}));
+
+app.use('/api/empresas', createProxyMiddleware({ 
+    ...proxyOptions,
+    target: 'http://localhost:3002',
+    pathRewrite: {'^/api/empresas': ''}
+}));
+
+app.use('/api/cuentas', createProxyMiddleware({ 
+    ...proxyOptions,
+    target: 'http://localhost:3003',
+    pathRewrite: {'^/api/cuentas': ''}
+>>>>>>> parent of 5e90cc4 (Refactor configuración de proxies en gateway.js y mejora en la estructura de servicios de usuarios y empresas)
 }));
 
 app.listen(PORT, () => {
-  console.log(`API Gateway ejecutándose en http://localhost:${PORT}`);
+    console.log(`API Gateway ejecutándose en http://localhost:${PORT}`);
 });
