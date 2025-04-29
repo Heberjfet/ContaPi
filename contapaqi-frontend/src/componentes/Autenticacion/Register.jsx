@@ -18,9 +18,8 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // URL actualizada para usar el API Gateway
       const response = await axios.post(
-        "http://localhost:3000/api/usuarios",
+        "http://localhost:3000/usuarios",
         formData
       );
       alert("Registro exitoso");
@@ -33,7 +32,6 @@ function Register() {
     }
   };
 
-  // El resto del componente permanece igual
   return (
     <div
       className="d-flex justify-content-center align-items-center vh-100"
