@@ -12,7 +12,11 @@ function RecuperarPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3000/recuperar-password", { email });
+      // URL actualizada para usar el API Gateway
+      await axios.post(
+        "http://localhost:3000/api/usuarios/recuperar-password",
+        { email }
+      );
       setMessage(
         "Se ha enviado un enlace a tu correo para recuperar tu contraseña"
       );
@@ -23,6 +27,7 @@ function RecuperarPassword() {
     }
   };
 
+  // El resto del componente permanece igual
   return (
     <div
       className="d-flex justify-content-center align-items-center vh-100"

@@ -14,8 +14,9 @@ function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // URL actualizada para usar el API Gateway
       const response = await axios.post(
-        "http://localhost:3000/login",
+        "http://localhost:3000/api/usuarios/login",
         formData
       );
       alert("Inicio de sesión exitoso");
@@ -27,6 +28,7 @@ function LoginForm() {
     }
   };
 
+  // El resto del componente permanece igual
   return (
     <div
       className="d-flex justify-content-center align-items-center vh-100"

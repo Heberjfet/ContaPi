@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function AgregarEmpresa() {
   const [formData, setFormData] = useState({
-    nombre: '',
-    rfc: '',
-    direccion: '',
-    telefono: '',
-    email: '',
+    nombre: "",
+    rfc: "",
+    direccion: "",
+    telefono: "",
+    email: "",
   });
 
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -28,46 +28,42 @@ function AgregarEmpresa() {
       !formData.telefono ||
       !formData.email
     ) {
-      alert('Debes llenar el formulario completo');
+      alert("Debes llenar el formulario completo");
       return;
     }
 
-    const usuario = JSON.parse(localStorage.getItem('usuario'));
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
 
     if (!usuario || !usuario.id) {
       setError(
-        'No se encontró la información del usuario. Por favor, inicia sesión nuevamente.'
+        "No se encontró la información del usuario. Por favor, inicia sesión nuevamente."
       );
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
     try {
-      const response = await axios.post('http://localhost:3000/empresas', {
+      // URL actualizada para usar el API Gateway
+      const response = await axios.post("http://localhost:3000/api/empresas", {
         ...formData,
         usuario_id: usuario.id,
       });
 
-      if (
-        window.confirm('Empresa agregada exitosamente. ¿Aceptar?')
-      ) {
-        navigate('/registrartransaccion', {
+      if (window.confirm("Empresa agregada exitosamente. ¿Aceptar?")) {
+        navigate("/registrartransaccion", {
           state: { nombreEmpresa: formData.nombre },
         });
       }
     } catch (error) {
-      console.error('Error al agregar empresa:', error);
-      setError('Error al agregar empresa');
+      console.error("Error al agregar empresa:", error);
+      setError("Error al agregar empresa");
     }
   };
 
+  // El resto del componente permanece igual
   return (
     <div className="container mt-3">
-      {error && (
-        <div className="alert alert-danger">
-          {error}
-        </div>
-      )}
+      {error && <div className="alert alert-danger">{error}</div>}
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label className="form-label">Nombre</label>
