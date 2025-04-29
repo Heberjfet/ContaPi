@@ -17,6 +17,7 @@ const proxyOptions = {
 };
 
 // Configuración de proxies para cada servicio
+<<<<<<< HEAD
 app.use('/api/usuarios', createProxyMiddleware({
   ...proxyOptions,
   target: 'http://localhost:3001', // Servicio de usuarios
@@ -39,6 +40,12 @@ app.use('/api/usuarios', createProxyMiddleware({
     target: 'http://localhost:3001',
     pathRewrite: {'^/api/usuarios': ''},
     changeOrigin: true
+=======
+app.use('/api/usuarios', createProxyMiddleware({ 
+    ...proxyOptions,
+    target: 'http://localhost:3001',
+    pathRewrite: {'^/api/usuarios': ''}
+>>>>>>> parent of 8276cfc (se cambiaros algunas rutas del api pára revisar el funcionamiento)
 }));
 
 app.use('/api/empresas', createProxyMiddleware({ 
