@@ -6,10 +6,10 @@ const bodyParser = require('body-parser');
 
 // Configuración de la conexión a MySQL
 const dbConfig = {
-  host: 'localhost',
-  user: 'root-contapi',
-  password: 'Contapi12@',
-  database: 'contapi'
+  host: 'localhost',          // Dirección del servidor MySQL
+  user: 'root-contapi',       // Usuario de la base de datos
+  password: 'Contapi12@',     // Contraseña del usuario
+  database: 'contapi',      // Nombre de la nueva base de datos
 };
 
 // Función genérica para levantar un microservicio
@@ -37,10 +37,9 @@ function createService(port, name) {
 }
 
 // Exportamos la función para los servicios
-t:
 module.exports = { createService };
 
-// Punto de entrada: arrancar todos los servicios
+// Punto de entrada: arrancar todos los microservicios
 console.log('Iniciando todos los microservicios...');
 require('./services/usuarios');
 require('./services/empresas');

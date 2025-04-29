@@ -5,10 +5,10 @@
 -- Server version	8.0.41-0ubuntu0.24.04.1
 
 -- Crear la nueva base de datos
-CREATE DATABASE IF NOT EXISTS contapaqi CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+CREATE DATABASE IF NOT EXISTS contapi CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 
 -- Usar la nueva base de datos
-USE contapaqi;
+USE contapi;
 
 -- ------------------------------------------------------
 -- Estructura de la tabla `usuarios`
