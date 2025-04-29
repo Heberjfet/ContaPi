@@ -4,97 +4,95 @@
 -- ------------------------------------------------------
 -- Server version	8.0.41-0ubuntu0.24.04.1
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+-- Crear la nueva base de datos
+CREATE DATABASE IF NOT EXISTS contapaqi CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 
---
--- Table structure for table `cuentas_madre`
---
+-- Usar la nueva base de datos
+USE contapaqi;
 
-DROP TABLE IF EXISTS `cuentas_madre`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `cuentas_madre` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) NOT NULL,
-  `empresa_id` int DEFAULT NULL,
+-- ------------------------------------------------------
+-- Estructura de la tabla `usuarios`
+-- ------------------------------------------------------
+CREATE TABLE `usuarios` (
+  `id` INT NOT NULL AUTO_INCREMENT,          -- Identificador único
+  `nombre` VARCHAR(100) NOT NULL,            -- Nombre del usuario
+  `email` VARCHAR(100) NOT NULL,             -- Email del usuario
+  `password` VARCHAR(255) NOT NULL,          -- Contraseña del usuario
   PRIMARY KEY (`id`),
-  KEY `cuentas_madre_ibfk_1` (`empresa_id`),
-  CONSTRAINT `cuentas_madre_ibfk_1` FOREIGN KEY (`empresa_id`) REFERENCES `empresas` (`id`) ON DELETE CASCADE
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `empresas`
---
-
-DROP TABLE IF EXISTS `empresas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+-- ------------------------------------------------------
+-- Estructura de la tabla `empresas`
+-- ------------------------------------------------------
 CREATE TABLE `empresas` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) NOT NULL,
-  `rfc` varchar(20) NOT NULL,
-  `direccion` varchar(200) NOT NULL,
-  `telefono` varchar(20) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `tipo_contabilidad` enum('Balance General','Libro Diario','Libro Mayor') NOT NULL,
-  `usuario_id` int DEFAULT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,          -- Identificador único
+  `nombre` VARCHAR(100) NOT NULL,            -- Nombre de la empresa
+  `rfc` VARCHAR(20) NOT NULL,                -- RFC de la empresa
+  `direccion` VARCHAR(200) NOT NULL,         -- Dirección de la empresa
+  `telefono` VARCHAR(20) NOT NULL,           -- Teléfono de la empresa
+  `email` VARCHAR(100) NOT NULL,             -- Email de la empresa
+  `usuario_id` INT DEFAULT NULL,             -- Relación con el usuario
   PRIMARY KEY (`id`),
   KEY `usuario_id` (`usuario_id`),
   CONSTRAINT `empresas_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Table structure for table `subcuentas`
---
+-- ------------------------------------------------------
+-- Estructura de la tabla `cuentas_madre`
+-- ------------------------------------------------------
+CREATE TABLE `cuentas_madre` (
+  `id` INT NOT NULL AUTO_INCREMENT,          -- Identificador único
+  `nombre` VARCHAR(100) NOT NULL,            -- Nombre de la cuenta madre
+  `editable` BOOLEAN NOT NULL DEFAULT FALSE, -- Indica si la cuenta madre es modificable (FALSE para globales)
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-DROP TABLE IF EXISTS `subcuentas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+-- ------------------------------------------------------
+-- Estructura de la tabla `subcuentas`
+-- ------------------------------------------------------
 CREATE TABLE `subcuentas` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) NOT NULL,
-  `cuenta_madre_id` int DEFAULT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,          -- Identificador único
+  `nombre` VARCHAR(100) NOT NULL,            -- Nombre de la subcuenta
+  `cuenta_madre_id` INT NOT NULL,            -- Relación con la cuenta madre
+  `empresa_id` INT NOT NULL,                 -- Relación con la empresa
   PRIMARY KEY (`id`),
   KEY `cuenta_madre_id` (`cuenta_madre_id`),
-  CONSTRAINT `subcuentas_ibfk_1` FOREIGN KEY (`cuenta_madre_id`) REFERENCES `cuentas_madre` (`id`) ON DELETE CASCADE
+  KEY `empresa_id` (`empresa_id`),
+  CONSTRAINT `subcuentas_ibfk_1` FOREIGN KEY (`cuenta_madre_id`) REFERENCES `cuentas_madre` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `subcuentas_ibfk_2` FOREIGN KEY (`empresa_id`) REFERENCES `empresas` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `usuarios`
---
-
-DROP TABLE IF EXISTS `usuarios`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `usuarios` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL,
+-- ------------------------------------------------------
+-- Estructura de la tabla `transacciones`
+-- ------------------------------------------------------
+CREATE TABLE `transacciones` (
+  `id` INT NOT NULL AUTO_INCREMENT,          -- Identificador único
+  `fecha` DATE NOT NULL,                     -- Fecha de la transacción
+  `descripcion` VARCHAR(255) NOT NULL,       -- Descripción de la transacción
+  `monto` DECIMAL(10, 2) NOT NULL,           -- Monto de la transacción
+  `empresa_id` INT NOT NULL,                 -- Relación con la empresa
+  `cuenta_madre_id` INT NOT NULL,            -- Relación con la cuenta madre
+  `subcuenta_id` INT DEFAULT NULL,           -- Relación con la subcuenta (opcional)
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Fecha de creación
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+  KEY `empresa_id` (`empresa_id`),
+  KEY `cuenta_madre_id` (`cuenta_madre_id`),
+  KEY `subcuenta_id` (`subcuenta_id`),
+  CONSTRAINT `transacciones_ibfk_1` FOREIGN KEY (`empresa_id`) REFERENCES `empresas` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `transacciones_ibfk_2` FOREIGN KEY (`cuenta_madre_id`) REFERENCES `cuentas_madre` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `transacciones_ibfk_3` FOREIGN KEY (`subcuenta_id`) REFERENCES `subcuentas` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2025-03-19 20:39:59
+-- ------------------------------------------------------
+-- Insertar cuentas madre globales
+-- ------------------------------------------------------
+INSERT INTO `cuentas_madre` (`nombre`, `editable`)
+VALUES
+  ('Caja', FALSE),
+  ('Bancos', FALSE),
+  ('Clientes', FALSE),
+  ('Proveedores', FALSE),
+  ('Capital Social', FALSE),
+  ('Ingresos', FALSE),
+  ('Gastos', FALSE);
