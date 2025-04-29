@@ -9,23 +9,29 @@ const PORT = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
+// Opciones compartidas para todos los proxies
+const proxyOptions = {
+  changeOrigin: true,
+  logLevel: 'silent' // Reduce logs innecesarios
+};
+
 // Configuración de proxies para cada servicio
 app.use('/api/usuarios', createProxyMiddleware({ 
+    ...proxyOptions,
     target: 'http://localhost:3001',
-    pathRewrite: {'^/api/usuarios': ''},
-    changeOrigin: true
+    pathRewrite: {'^/api/usuarios': ''}
 }));
 
 app.use('/api/empresas', createProxyMiddleware({ 
+    ...proxyOptions,
     target: 'http://localhost:3002',
-    pathRewrite: {'^/api/empresas': ''},
-    changeOrigin: true
+    pathRewrite: {'^/api/empresas': ''}
 }));
 
 app.use('/api/cuentas', createProxyMiddleware({ 
+    ...proxyOptions,
     target: 'http://localhost:3003',
-    pathRewrite: {'^/api/cuentas': ''},
-    changeOrigin: true
+    pathRewrite: {'^/api/cuentas': ''}
 }));
 
 app.listen(PORT, () => {
