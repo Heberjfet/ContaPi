@@ -2,18 +2,17 @@ import React, { useState, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import UserDropdown from "./InfoUser";
 import { Modal } from "react-bootstrap";
-import Settings from "./Ajustes";
-import { useLocation, useNavigate } from "react-router-dom"; // Added useNavigate
+import Settings from "./Ajustes"; 
+import { useLocation } from "react-router-dom"; // Importamos useLocation para detectar la ruta actual
 
 function Navbar({ nombre, toggleSidebar, isSidebarOpen }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate(); // Initialize the navigate hook
- 
+  const location = useLocation(); // Obtenemos la ubicación actual
+  
   // Verificamos si estamos en la página Homepage
   const isHomePage = location.pathname === "/" || location.pathname === "/homepage";
- 
+  
   // Datos de ejemplo del usuario
   const userData = {
     nombre: nombre || "Usuario",
@@ -21,12 +20,7 @@ function Navbar({ nombre, toggleSidebar, isSidebarOpen }) {
     email: "usuario@ejemplo.com",
     avatar: "/path/to/avatar.jpg",
   };
-
-  // Function to handle logo click
-  const handleLogoClick = () => {
-    navigate('/homepage'); // Navigate specifically to homepage, not to root/login
-  };
- 
+  
   return (
     <>
       <nav
@@ -46,12 +40,7 @@ function Navbar({ nombre, toggleSidebar, isSidebarOpen }) {
             >
               <FaBars size={20} />
             </button>
-            {/* Logo and brand name wrapped in clickable div */}
-            <div 
-              className="d-flex align-items-center" 
-              onClick={handleLogoClick}
-              style={{ cursor: "pointer" }}
-            >
+            <div className="d-flex align-items-center">
               <img
                 src="/logo.png"
                 alt="Logo Contapi"
@@ -74,7 +63,7 @@ function Navbar({ nombre, toggleSidebar, isSidebarOpen }) {
             onClose={() => setShowDropdown(false)}
             userData={userData}
             onOpenSettings={() => setShowSettings(true)}
-            isHomePage={isHomePage}
+            isHomePage={isHomePage} // Pasamos la información de si estamos en Homepage
           />
         </div>
       </nav>
