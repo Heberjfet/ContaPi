@@ -1,67 +1,42 @@
 import React, { useState, useEffect } from "react";
-import { FaBars } from "react-icons/fa";
+import { FaBars, FaTimes } from "react-icons/fa";
 import UserDropdown from "./InfoUser";
 import { Modal } from "react-bootstrap";
 import Settings from "./Ajustes";
-import UserProfile from "./UserProfile";
-import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useLocation, useNavigate } from "react-router-dom"; // Added useNavigate
 
-function Navbar({ toggleSidebar, isSidebarOpen }) {
+function Navbar({ nombre, toggleSidebar, isSidebarOpen }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
-  const [userData, setUserData] = useState({
-    nombre: "Cargando...",
-    email: "",
-    rol: "Contador Certificado"
-  });
   const location = useLocation();
-  const navigate = useNavigate();
-
-  const fetchUserData = async () => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) return;
-    try {
-      const response = await axios.get(
-        `http://localhost:3001/usuarios/${userId}`
-      );
-     
-      setUserData({
-        ...userData,
-        nombre: response.data.nombre,
-        email: response.data.email
-      });
-     
-    } catch (error) {
-      console.error("Error obteniendo datos del usuario:", error);
-      // Opcional: Redirigir a login si hay error
-      // navigate("/login");
-    }
+  const navigate = useNavigate(); // Initialize the navigate hook
+ 
+  // Verificamos si estamos en la página Homepage
+  const isHomePage = location.pathname === "/" || location.pathname === "/homepage";
+ 
+  // Datos de ejemplo del usuario
+  const userData = {
+    nombre: nombre || "Usuario",
+    rol: "Contador Certificado",
+    email: "usuario@ejemplo.com",
+    avatar: "/path/to/avatar.jpg",
   };
 
-  useEffect(() => {
-    fetchUserData();
-  }, [location.pathname]);
-
+  // Function to handle logo click
   const handleLogoClick = () => {
-    navigate("/homepage");
+    navigate('/homepage'); // Navigate specifically to homepage, not to root/login
   };
-
-  // Función para cerrar modal y actualizar datos
-  const handleSettingsSave = () => {
-    setShowSettings(false);
-    // Actualizar los datos del usuario después de guardar cambios
-    fetchUserData();
-  };
-
+ 
   return (
     <>
       <nav
         className={`navbar navbar-dark py-3 ${
           isSidebarOpen ? "navbar-expanded" : ""
         }`}
-        style={{ backgroundColor: "#160041" }}
+        style={{
+          backgroundColor: "#160041",
+          transition: "margin-left 0.3s ease",
+        }}
       >
         <div className="container-fluid">
           <div className="d-flex align-items-center">
@@ -71,9 +46,9 @@ function Navbar({ toggleSidebar, isSidebarOpen }) {
             >
               <FaBars size={20} />
             </button>
-           
-            <div
-              className="d-flex align-items-center"
+            {/* Logo and brand name wrapped in clickable div */}
+            <div 
+              className="d-flex align-items-center" 
               onClick={handleLogoClick}
               style={{ cursor: "pointer" }}
             >
@@ -92,50 +67,44 @@ function Navbar({ toggleSidebar, isSidebarOpen }) {
             onClick={() => setShowDropdown(!showDropdown)}
             style={{ cursor: "pointer" }}
           >
-            <span>Bienvenido, {userData.nombre}</span>
+            <span>Bienvenido, {nombre}</span>
           </button>
           <UserDropdown
             isOpen={showDropdown}
             onClose={() => setShowDropdown(false)}
             userData={userData}
             onOpenSettings={() => setShowSettings(true)}
-            onViewProfile={() => setShowProfile(true)}
-            isHomePage={location.pathname === "/homepage"}
+            isHomePage={isHomePage}
           />
         </div>
       </nav>
-      
-      {/* Modal de Configuración */}
       <Modal
         show={showSettings}
         onHide={() => setShowSettings(false)}
         centered
         size="lg"
+        backdrop="static"
+        keyboard={false}
       >
-        <Modal.Header closeButton>
-          <Modal.Title>Configuración de Perfil</Modal.Title>
+        <Modal.Header className="border-0 pb-0 pt-4 px-4 position-relative">
+          <Modal.Title className="w-100 text-center">
+            <h4 className="fw-bold">
+              <span className="text-primary me-2">✏️</span>
+              Editar Perfil
+            </h4>
+          </Modal.Title>
+          <button
+            className="btn-close position-absolute"
+            style={{ top: "15px", right: "15px" }}
+            onClick={() => setShowSettings(false)}
+            aria-label="Cerrar"
+          />
         </Modal.Header>
-        <Modal.Body>
-          <Settings onSave={handleSettingsSave} />
-        </Modal.Body>
-      </Modal>
-      
-      {/* Modal de Ver Perfil */}
-      <Modal
-        show={showProfile}
-        onHide={() => setShowProfile(false)}
-        centered
-        size="lg"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Mi Perfil</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <UserProfile onClose={() => setShowProfile(false)} />
+        <Modal.Body className="px-4">
+          <Settings onSave={() => setShowSettings(false)} />
         </Modal.Body>
       </Modal>
     </>
   );
 }
-
 export default Navbar;
