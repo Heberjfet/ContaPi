@@ -7,6 +7,7 @@ import AgregarEmpresa from "../empresa/AgregarEmpresa";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import EmpresasList from "./EmpresasList";
+import OllamaChat from "../ollama/OllamaChat";
 
 function Homepage() {
   const location = useLocation();
@@ -172,6 +173,9 @@ function Homepage() {
           </div>
         )}
       </div>
+
+      {/* Agregamos el componente OllamaChat */}
+      <OllamaChat />
     </div>
   );
 }
