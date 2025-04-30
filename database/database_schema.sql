@@ -115,38 +115,3 @@ VALUES
 ('Gastos de ventas',FALSE), 
 ('Gastos generales',FALSE), 
 ('Costos de venta',FALSE); 
-
-
-ALTER TABLE subcuentas ADD COLUMN editable BOOLEAN NOT NULL DEFAULT FALSE;
-ALTER TABLE subcuentas ALTER cuenta_madre_id SET DEFAULT 1;
-
-INSERT INTO `subcuentas` (`nombre`, `editable`, `cuenta_madre_id`, `empresa_id`)
-VALUES
-  ('Caja y efectivo' , FALSE, 1, 1),
-  ('Bancos nacionales', FALSE, 1, 1),
-  ('IVA ', FALSE, 1, 1),
-  ('ISR', FALSE, 1, 1),
-  ('Materia prima', FALSE, 1, 1),
-  ('IVA acreditable', FALSE, 1, 1),
-  ('IVA pendiente por pagar', FALSE, 1, 1),
-  ('Anticipo de proveedores', FALSE, 1, 1),
-  ('Proveedores nacionales', FALSE, 1, 1),
-  ('Proveedores internacionales', FALSE, 1, 1),
-  ('Cuentas por pagar a corto plazo', FALSE, 1, 1),
-  ('Anticipo de clientes', FALSE, 1, 1),
-  ('IVA trasladado', FALSE, 1, 1),
-  ('ISR diferido', FALSE, 1, 1),
-  ('Capital fijo', FALSE, 1, 1),
-  ('Capital variable', FALSE, 1, 1),
-  ('Devoluciones, descuento o bonificacion', FALSE, 1, 1),
-  ('Costo de venta', FALSE, 1, 1),
-  ('Tiempos extras', FALSE, 1, 1),
-  ('PTU', FALSE, 1, 1),
-  ('Papeleria y equipo de oficina', FALSE, 1, 1),
-  ('Limpieza', FALSE, 1, 1),
-  ('Mano de obra', FALSE, 1, 1),
-  ('Regalias', FALSE, 1, 1),
-  ('Utilidades', FALSE, 1, 1),
-  ('Perdida de venta', FALSE, 1, 1),
-  ('Ganancia de venta', FALSE, 1, 1),
-  ('Sueldos y salarios', FALSE, 1, 1);
