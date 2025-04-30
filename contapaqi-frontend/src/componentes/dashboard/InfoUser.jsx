@@ -1,11 +1,13 @@
 import React, { useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "../styles/UserDropdown.css";
 
 const InfoUser = ({ isOpen, onClose, userData, onOpenSettings, isHomePage }) => {
   const dropdownRef = useRef(null);
-  
+  const navigate = useNavigate();
+ 
   // Cerrar el dropdown cuando se hace clic fuera
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -20,21 +22,24 @@ const InfoUser = ({ isOpen, onClose, userData, onOpenSettings, isHomePage }) => 
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen, onClose]);
-  
+ 
   const handleLogout = () => {
+    // Eliminar datos de usuario del localStorage
+    localStorage.removeItem("usuario");
     alert("Has salido de la cuenta");
     onClose();
-    // Aquí puedes añadir la lógica de logout, como redirigir al login
-    // window.location.href = "/";
+   
+    // Redirigir al login
+    navigate("/");
   };
-  
+ 
   const handleEditProfile = () => {
     onClose(); // Cerrar el dropdown
     if (onOpenSettings) onOpenSettings(); // Abrir configuración de perfil
   };
-  
+ 
   if (!isOpen) return null;
-  
+ 
   return (
     <div className="user-dropdown-backdrop">
       <div ref={dropdownRef} className="user-dropdown-container">
@@ -45,6 +50,7 @@ const InfoUser = ({ isOpen, onClose, userData, onOpenSettings, isHomePage }) => 
             <div>
               <h5 className="mb-0">{userData.nombre}</h5>
               <p className="mb-0 text-muted small">{userData.rol}</p>
+              <small className="text-muted">{userData.email}</small>
             </div>
             <button
               className="ms-auto btn text-danger border-0"

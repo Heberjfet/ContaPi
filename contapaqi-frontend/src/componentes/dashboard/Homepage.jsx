@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
+import axios from "axios";
 
 import AgregarEmpresa from "../empresa/AgregarEmpresa";
 import Navbar from "./Navbar";
@@ -12,13 +13,55 @@ import OllamaChat from "../ollama/OllamaChat";
 function Homepage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const nombre =
-    location.state?.nombre || localStorage.getItem("nombre") || "Usuario";
-
+  
   const [showModal, setShowModal] = useState(false);
   const [vistaActual, setVistaActual] = useState("Recientes");
   const [empresas, setEmpresas] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [usuarioData, setUsuarioData] = useState({
+    id: null,
+    nombre: "Usuario",
+    email: "",
+    rol: "Contador Certificado"
+  });
+
+  // Cargar la información del usuario desde la base de datos
+  useEffect(() => {
+    const cargarUsuario = async () => {
+      // Obtener el ID del usuario del localStorage
+      const usuarioGuardado = localStorage.getItem("usuario");
+      
+      if (usuarioGuardado) {
+        try {
+          const { id } = JSON.parse(usuarioGuardado);
+          
+          if (id) {
+            // Obtener datos actualizados del usuario desde la BD
+            const response = await axios.get(`http://localhost:3001/usuarios/${id}`);
+            setUsuarioData(response.data);
+          } else {
+            // Si no hay ID, redirigir al login
+            navigate("/");
+          }
+        } catch (error) {
+          console.error("Error al cargar información del usuario:", error);
+          // En caso de error, intentar usar datos guardados si existen
+          const datos = JSON.parse(usuarioGuardado);
+          if (datos?.nombre) {
+            setUsuarioData({
+              ...usuarioData,
+              ...datos
+            });
+          }
+        }
+      } else {
+        // Si no hay usuario guardado, redirigir al login
+        navigate("/");
+      }
+    };
+
+    cargarUsuario();
+  }, [navigate]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
@@ -99,7 +142,7 @@ function Homepage() {
         }}
       >
         <Navbar
-          nombre={nombre}
+          nombre={usuarioData.nombre}
           toggleSidebar={toggleSidebar}
           isSidebarOpen={isSidebarOpen}
         />

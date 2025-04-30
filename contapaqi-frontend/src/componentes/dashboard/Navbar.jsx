@@ -3,30 +3,78 @@ import { FaBars, FaTimes } from "react-icons/fa";
 import UserDropdown from "./InfoUser";
 import { Modal } from "react-bootstrap";
 import Settings from "./Ajustes";
-import { useLocation, useNavigate } from "react-router-dom"; // Added useNavigate
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Navbar({ nombre, toggleSidebar, isSidebarOpen }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate(); // Initialize the navigate hook
- 
-  // Verificamos si estamos en la página Homepage
-  const isHomePage = location.pathname === "/" || location.pathname === "/homepage";
- 
-  // Datos de ejemplo del usuario
-  const userData = {
+  const [userData, setUserData] = useState({
     nombre: nombre || "Usuario",
     rol: "Contador Certificado",
-    email: "usuario@ejemplo.com",
-    avatar: "/path/to/avatar.jpg",
+    email: ""
+  });
+  
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Verificamos si estamos en la página Homepage
+  const isHomePage = location.pathname === "/" || location.pathname === "/homepage";
+  
+  // Función para cargar datos del usuario desde la BD
+  const fetchUserData = async () => {
+    try {
+      const usuarioGuardado = localStorage.getItem("usuario");
+      if (usuarioGuardado) {
+        const { id } = JSON.parse(usuarioGuardado);
+        
+        if (id) {
+          const response = await axios.get(`http://localhost:3001/usuarios/${id}`);
+          setUserData({
+            ...userData,
+            ...response.data
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error al cargar datos del usuario en Navbar:", error);
+    }
   };
-
+  
+  // Cargamos datos actualizados del usuario desde la BD
+  useEffect(() => {
+    fetchUserData();
+  }, [nombre]);
+  
+  // Escuchar evento de actualización de perfil
+  useEffect(() => {
+    const handleProfileUpdate = (event) => {
+      if (event.detail) {
+        // Actualizar el estado con los nuevos datos
+        setUserData(prevData => ({
+          ...prevData,
+          ...event.detail
+        }));
+      } else {
+        // Si no hay detalles, recargar los datos
+        fetchUserData();
+      }
+    };
+    
+    // Registrar el event listener
+    window.addEventListener('userProfileUpdated', handleProfileUpdate);
+    
+    // Limpieza del event listener
+    return () => {
+      window.removeEventListener('userProfileUpdated', handleProfileUpdate);
+    };
+  }, []);
+  
   // Function to handle logo click
   const handleLogoClick = () => {
-    navigate('/homepage'); // Navigate specifically to homepage, not to root/login
+    navigate('/homepage');
   };
- 
+  
   return (
     <>
       <nav
@@ -47,8 +95,8 @@ function Navbar({ nombre, toggleSidebar, isSidebarOpen }) {
               <FaBars size={20} />
             </button>
             {/* Logo and brand name wrapped in clickable div */}
-            <div 
-              className="d-flex align-items-center" 
+            <div
+              className="d-flex align-items-center"
               onClick={handleLogoClick}
               style={{ cursor: "pointer" }}
             >
@@ -67,7 +115,7 @@ function Navbar({ nombre, toggleSidebar, isSidebarOpen }) {
             onClick={() => setShowDropdown(!showDropdown)}
             style={{ cursor: "pointer" }}
           >
-            <span>Bienvenido, {nombre}</span>
+            <span>Bienvenido, {userData.nombre}</span>
           </button>
           <UserDropdown
             isOpen={showDropdown}
@@ -101,10 +149,18 @@ function Navbar({ nombre, toggleSidebar, isSidebarOpen }) {
           />
         </Modal.Header>
         <Modal.Body className="px-4">
-          <Settings onSave={() => setShowSettings(false)} />
+          <Settings 
+            onSave={() => {
+              setShowSettings(false);
+              // Recargar datos del usuario después de guardar
+              fetchUserData();
+            }}
+            userData={userData}
+          />
         </Modal.Body>
       </Modal>
     </>
   );
 }
+
 export default Navbar;
