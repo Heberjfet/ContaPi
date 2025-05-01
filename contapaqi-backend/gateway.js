@@ -46,3 +46,4 @@ require('./services/empresas');
 require('./services/cuentasmadre');
 require('./services/subcuentas');
 require('./services/transacciones'); // Nuevo microservicio para transacciones
+require('./services/ollama'); // Nuevo microservicio para Ollama

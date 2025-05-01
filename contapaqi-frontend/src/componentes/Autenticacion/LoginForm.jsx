@@ -5,28 +5,45 @@ import axios from "axios";
 function LoginForm() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
+    
     try {
       const response = await axios.post(
         "http://localhost:3001/login",
         formData
       );
-      alert("Inicio de sesión exitoso");
-      localStorage.setItem("usuario", JSON.stringify(response.data));
-      navigate("/homepage", { state: { nombre: response.data.nombre } });
+      
+      // Guardar solo el ID del usuario en localStorage 
+      // (los datos completos se obtendrán de la BD cuando se necesiten)
+      localStorage.setItem("usuario", JSON.stringify({
+        id: response.data.id,
+        nombre: response.data.nombre,
+        email: response.data.email
+      }));
+      
+      // Redireccionar al usuario a la página principal
+      navigate("/homepage"); 
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
-      setError("Credenciales incorrectas. Inténtalo de nuevo.");
+      setError(
+        error.response?.data?.error || 
+        "Error al iniciar sesión. Verifica tus credenciales."
+      );
+    } finally {
+      setLoading(false);
     }
   };
-
+  
   return (
     <div
       className="d-flex justify-content-center align-items-center vh-100"
@@ -62,8 +79,12 @@ function LoginForm() {
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary w-100 fw-bold mb-3">
-            Iniciar Sesión
+          <button 
+            type="submit" 
+            className="btn btn-primary w-100 fw-bold mb-3"
+            disabled={loading}
+          >
+            {loading ? "Procesando..." : "Iniciar Sesión"}
           </button>
         </form>
         <Link
