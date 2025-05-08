@@ -1,132 +1,92 @@
-// services/usuariosService.js
 const { createService } = require('../gateway');
-const { app: usuariosApp, db: usuariosDb } = createService(3001, 'Usuarios');
+createService(3001, 'Usuarios').then(({ app, dbs }) => {
+  const { mongoDb, breaker } = dbs;
 
-// Rutas Usuarios
-usuariosApp.get('/usuarios', (req, res) => {
-  usuariosDb.query('SELECT * FROM usuarios', (err, results) => {
-    if (err) {
-      console.error('Error al obtener usuarios:', err);
-      return res.status(500).json({ error: 'Error en el servidor' });
+  app.get('/usuarios', async (req, res) => {
+    try {
+      const [rows] = await breaker.fire('SELECT id, nombre, email FROM usuarios', []);
+      res.json(rows);
+    } catch {
+      res.json(await mongoDb.collection('usuarios').find().toArray());
     }
-    res.json(results);
   });
-});
 
-// Ruta para obtener un usuario específico por ID
-usuariosApp.get('/usuarios/:id', (req, res) => {
-  const userId = req.params.id;
-  
-  usuariosDb.query(
-    'SELECT * FROM usuarios WHERE id = ?',
-    [userId],
-    (err, results) => {
-      if (err) {
-        console.error('Error al obtener usuario por ID:', err);
-        return res.status(500).json({ error: 'Error en el servidor' });
+  app.get('/usuarios/:id', async (req, res) => {
+    const id = Number(req.params.id);
+    try {
+      const [rows] = await breaker.fire(
+        'SELECT id, nombre, email FROM usuarios WHERE id = ?',
+        [id]
+      );
+      if (!rows.length) return res.status(404).json({ error: 'Usuario no encontrado' });
+      res.json(rows[0]);
+    } catch {
+      const doc = await mongoDb.collection('usuarios').findOne({ mysql_id: id });
+      if (!doc) return res.status(404).json({ error: 'Usuario no encontrado' });
+      delete doc._id;
+      res.json(doc);
+    }
+  });
+
+  app.post('/usuarios', async (req, res) => {
+    const { nombre, email, password } = req.body;
+    if (!nombre || !email || !password)
+      return res.status(400).json({ error: 'Faltan campos obligatorios' });
+
+    try {
+      const [result] = await breaker.fire(
+        'INSERT INTO usuarios (nombre, email, password) VALUES (?, ?, ?)',
+        [nombre, email, password]
+      );
+      const newId = result.insertId;
+      await mongoDb.collection('usuarios').insertOne({ mysql_id: newId, nombre, email });
+      res.status(201).json({ id: newId, nombre, email });
+    } catch {
+      const { insertedId } = await mongoDb
+        .collection('usuarios')
+        .insertOne({ nombre, email, fallback: true });
+      res.status(201).json({ fallback: true, mongoId: insertedId, nombre, email });
+    }
+  });
+
+  app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+      const [rows] = await breaker.fire(
+        'SELECT id, nombre, email FROM usuarios WHERE email = ? AND password = ?',
+        [email, password]
+      );
+      if (!rows.length) return res.status(401).json({ error: 'Credenciales inválidas' });
+      res.json(rows[0]);
+    } catch {
+      const doc = await mongoDb.collection('usuarios').findOne({ email, password });
+      if (!doc) return res.status(401).json({ error: 'Credenciales inválidas' });
+      res.json({ id: doc.mysql_id || null, nombre: doc.nombre, email: doc.email });
+    }
+  });
+
+  app.put('/usuarios/:id', async (req, res) => {
+    const id = Number(req.params.id);
+    const fields = [];
+    const values = [];
+    ['nombre', 'email', 'password'].forEach((key) => {
+      if (req.body[key]) {
+        fields.push(`${key} = ?`);
+        values.push(req.body[key]);
       }
-      
-      if (results.length === 0) {
+    });
+    if (!fields.length) return res.status(400).json({ error: 'Nada por actualizar' });
+    values.push(id);
+    const sql = `UPDATE usuarios SET ${fields.join(', ')} WHERE id = ?`;
+
+    try {
+      const [result] = await breaker.fire(sql, values);
+      if (result.affectedRows === 0)
         return res.status(404).json({ error: 'Usuario no encontrado' });
-      }
-      
-      // Enviamos los datos del usuario sin la contraseña
-      const usuario = results[0];
-      const { password, ...usuarioSinPassword } = usuario;
-      
-      res.json(usuarioSinPassword);
+      await mongoDb.collection('usuarios').updateOne({ mysql_id: id }, { $set: req.body });
+      res.json({ message: 'Usuario actualizado' });
+    } catch {
+      res.status(500).json({ error: 'Error actualizando usuario' });
     }
-  );
-});
-
-usuariosApp.post('/usuarios', (req, res) => {
-  const { nombre, email, password } = req.body;
-  usuariosDb.query(
-    'INSERT INTO usuarios (nombre, email, password) VALUES (?, ?, ?)',
-    [nombre, email, password],
-    (err, results) => {
-      if (err) {
-        console.error('Error al registrar usuario:', err);
-        return res.status(500).json({ error: 'Error en el servidor' });
-      }
-      res.json({ id: results.insertId, nombre, email });
-    }
-  );
-});
-
-usuariosApp.post('/login', (req, res) => {
-  const { email, password } = req.body;
-  usuariosDb.query(
-    'SELECT * FROM usuarios WHERE email = ? AND password = ?',
-    [email, password],
-    (err, results) => {
-      if (err) {
-        console.error('Error al buscar usuario:', err);
-        return res.status(500).json({ error: 'Error en el servidor' });
-      }
-      if (results.length === 0) {
-        return res.status(401).json({ error: 'Credenciales incorrectas' });
-      }
-      const usuario = results[0];
-      res.json({ id: usuario.id, nombre: usuario.nombre, email: usuario.email });
-    }
-  );
-});
-
-// Actualizar información del usuario
-usuariosApp.put('/usuarios/:id', (req, res) => {
-  const userId = req.params.id;
-  const { nombre, email, password } = req.body;
-  
-  // Construir la consulta dinámicamente según los campos proporcionados
-  let query = 'UPDATE usuarios SET ';
-  const updateFields = [];
-  const values = [];
-  
-  if (nombre) {
-    updateFields.push('nombre = ?');
-    values.push(nombre);
-  }
-  
-  if (email) {
-    updateFields.push('email = ?');
-    values.push(email);
-  }
-  
-  if (password) {
-    updateFields.push('password = ?');
-    values.push(password);
-  }
-  
-  if (updateFields.length === 0) {
-    return res.status(400).json({ error: 'No se proporcionaron campos para actualizar' });
-  }
-  
-  query += updateFields.join(', ') + ' WHERE id = ?';
-  values.push(userId);
-  
-  usuariosDb.query(query, values, (err, results) => {
-    if (err) {
-      console.error('Error al actualizar usuario:', err);
-      return res.status(500).json({ error: 'Error en el servidor' });
-    }
-    
-    if (results.affectedRows === 0) {
-      return res.status(404).json({ error: 'Usuario no encontrado' });
-    }
-    
-    // Obtener los datos actualizados del usuario
-    usuariosDb.query(
-      'SELECT id, nombre, email FROM usuarios WHERE id = ?',
-      [userId], 
-      (err, results) => {
-        if (err) {
-          console.error('Error al obtener usuario actualizado:', err);
-          return res.status(200).json({ message: 'Usuario actualizado correctamente' });
-        }
-        
-        res.json(results[0]);
-      }
-    );
   });
 });

@@ -1,50 +1,82 @@
-// gateway.js
 const express = require('express');
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const { MongoClient } = require('mongodb');
+const CircuitBreaker = require('opossum');
+const { exec } = require('child_process');
+const path = require('path');
 
-// Configuración de la conexión a MySQL
 const dbConfig = {
-  host: 'localhost',          // Dirección del servidor MySQL
-  user: 'root-contapi',       // Usuario de la base de datos
-  password: 'Contapi12@',     // Contraseña del usuario
-  database: 'contapi',        // Nombre de la nueva base de datos
+  host: 'localhost',
+  user: 'root-contapi',
+  password: 'Contapi12@',
+  database: 'contapi',
 };
 
-// Función genérica para levantar un microservicio
-function createService(port, name) {
+async function createService(port, name) {
   const app = express();
   app.use(cors());
   app.use(bodyParser.json());
 
-  // Conexión a la BD
-  const db = mysql.createConnection(dbConfig);
-  db.connect(err => {
-    if (err) {
-      console.error(`Error conectando a la BD (${name}):`, err);
-      return;
-    }
-    console.log(`Servicio de ${name} conectado a MySQL`);
+  const mysqlPool = mysql.createPool({
+    ...dbConfig,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
   });
 
-  // Arranca el servidor
-  app.listen(port, () => {
-    console.log(`Servicio de ${name} corriendo en http://localhost:${port}`);
-  });
+  const breaker = new CircuitBreaker(
+    (sql, params) => mysqlPool.query(sql, params),
+    { timeout: 5000, errorThresholdPercentage: 50, resetTimeout: 30000 }
+  );
+  breaker.fallback(() => { throw new Error('MySQL no disponible'); });
 
-  return { app, db };
+  const mongoClient = new MongoClient(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017');
+  await mongoClient.connect();
+  const mongoDb = mongoClient.db('contapi');
+
+  app.locals.dbs = { mysqlPool, mongoDb, breaker };
+  app.listen(port, () => console.log(`${name} corriendo en http://localhost:${port}`));
+
+  return { app, dbs: app.locals.dbs };
 }
 
-// Exportamos la función para los servicios
 module.exports = { createService };
 
-// Punto de entrada: arrancar todos los microservicios
-console.log('Iniciando todos los microservicios...');
-require('./services/usuarios');
-require('./services/empresas');
-require('./services/cuentasmadre');
-require('./services/subcuentas');
-require('./services/transacciones'); // Nuevo microservicio para transacciones
-require('./services/ollama'); // Nuevo microservicio para Ollama
-require('./services/descarga_masiva'); // Nuevo microservicio para descarga masiva
+if (require.main === module) {
+  const servicios = [
+    'usuarios',
+    'empresas',
+    'cuentasmadre',
+    'subcuentas',
+    'transacciones',
+    'descarga_masiva',
+    'ollama'
+  ];
+
+  const comandoTerminal = process.platform === 'win32'
+    ? 'start cmd /k'
+    : process.platform === 'darwin'
+      ? 'osascript -e'
+      : 'gnome-terminal -- bash -c';
+
+  servicios.forEach(servicio => {
+    const ruta = path.join(__dirname, 'services', `${servicio}.js`);
+    let comando;
+
+    if (process.platform === 'win32') {
+      comando = `${comandoTerminal} "node ${ruta}"`;
+    } else if (process.platform === 'darwin') {
+      comando = `${comandoTerminal} 'tell app "Terminal" to do script "node ${ruta}"'`;
+    } else {
+      comando = `${comandoTerminal} "node ${ruta}; exec bash"`;
+    }
+
+    exec(comando, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`❌ Error al iniciar ${servicio}:`, error.message);
+      }
+    });
+  });
+}

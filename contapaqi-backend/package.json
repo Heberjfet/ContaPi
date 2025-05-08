@@ -1,20 +1,24 @@
 {
   "name": "contapaqi-backend",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "gateway.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start:gateway": "node gateway.js",
+    "start:usuarios": "node services/usuarios.js",
+    "start:empresas": "node services/empresas.js",
+    "start:cuentas-madre": "node services/cuentasMadre.js",
+    "start:subcuentas": "node services/subcuentas.js",
+    "start:transacciones": "node services/transacciones.js",
+    "start:descarga": "node services/descarga_masiva.js",
+    "start:ollama": "node services/ollama.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
     "axios": "^1.9.0",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "express": "^4.21.2",
-    "mysql2": "^3.13.0"
+    "mongodb": "^6.16.0",
+    "mysql2": "^3.14.1",
+    "opossum": "^7.0.0"
   }
 }

@@ -1,31 +1,25 @@
-const { createService } = require('../gateway');
-const { app: transaccionesApp, db: transaccionesDb } = createService(3005, 'Transacciones');
+const { createService: createTR } = require('../gateway');
+createTR(3005, 'Transacciones').then(({ app, dbs }) => {
+  const { mongoDb, breaker } = dbs;
 
-// Endpoint para guardar una transacción
-transaccionesApp.post('/transacciones', (req, res) => {
-  const { fecha, descripcion, monto, empresa_id, cuenta_madre_id, subcuenta_id } = req.body;
-
-  // Validar que los campos obligatorios estén presentes
-  if (!fecha || !descripcion || !monto || !empresa_id || !cuenta_madre_id) {
-    return res.status(400).json({ error: 'Todos los campos obligatorios deben ser completados.' });
-  }
-
-  // Consulta para insertar la transacción
-  const query = `
-    INSERT INTO transacciones (fecha, descripcion, monto, empresa_id, cuenta_madre_id, subcuenta_id)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `;
-  transaccionesDb.query(
-    query,
-    [fecha, descripcion, monto, empresa_id, cuenta_madre_id, subcuenta_id || null],
-    (err, results) => {
-      if (err) {
-        console.error('Error al guardar la transacción:', err);
-        return res.status(500).json({ error: 'Error al guardar la transacción.' });
-      }
-      res.status(201).json({ message: 'Transacción registrada exitosamente.', id: results.insertId });
+  // Crear transacción
+  app.post('/transacciones', async (req, res) => {
+    const { fecha, descripcion, monto, empresa_id, cuenta_madre_id, subcuenta_id } = req.body;
+    if (!fecha || !descripcion || !monto || !empresa_id || !cuenta_madre_id) {
+      return res.status(400).json({ error: 'Todos los campos obligatorios deben completarse.' });
     }
-  );
-});
 
-module.exports = transaccionesApp;
+    try {
+      const [result] = await breaker.fire(
+        `INSERT INTO transacciones (fecha, descripcion, monto, empresa_id, cuenta_madre_id, subcuenta_id) VALUES (?,?,?,?,?,?)`,
+        [fecha, descripcion, monto, empresa_id, cuenta_madre_id, subcuenta_id || null]
+      );
+      const newId = result.insertId;
+      await mongoDb.collection('transacciones').insertOne({ mysql_id: newId, fecha: new Date(fecha), descripcion, monto, empresa_id, cuenta_madre_id, subcuenta_id: subcuenta_id || null });
+      return res.status(201).json({ id: newId, message: 'Transacción registrada exitosamente.' });
+    } catch {
+      const { insertedId } = await mongoDb.collection('transacciones').insertOne({ fecha: new Date(fecha), descripcion, monto, empresa_id, cuenta_madre_id, subcuenta_id: subcuenta_id || null, fallback: true });
+      return res.status(201).json({ fallback: true, mongoId: insertedId, message: 'Transacción registrada en fallback.' });
+    }
+  });
+});
